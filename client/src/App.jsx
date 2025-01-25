@@ -20,14 +20,24 @@ const Login = () => {
   });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
 
-  const changeInputHandler =(e,type)=>{
-    const {name , value} = e.target;
-    if(type==="signup"){
-      setSignupInput({...signupInput,[name]:value});
+  const changeInputHandler = (e, type) => {
+    const { name, value } = e.target;
+    if (type === "signup") {
+      setSignupInput({ ...signupInput, [name]: value });
+    } else {
+      setLoginInput({ ...loginInput, [name]: value });
     }
-    else{setLoginInput({...loginInput,[name]:value});
-  }
-  }
+  };
+
+  const handleSignupSubmit = () => {
+    console.log("Signup Data:", signupInput);
+    // Add your signup logic here
+  };
+
+  const handleLoginSubmit = () => {
+    console.log("Login Data:", loginInput);
+    // Add your login logic here
+  };
 
   return (
     <div className="flex items-center w-full justify-center">
@@ -51,8 +61,8 @@ const Login = () => {
                   name="name"
                   value={signupInput.name}
                   placeholder="Eg Soni"
-                  onChange={(e)=> changeInputHandler(e,"signup")}
-                  required="true"
+                  onChange={(e) => changeInputHandler(e, "signup")}
+                  required
                 />
               </div>
               <div className="space-y-1">
@@ -61,9 +71,9 @@ const Login = () => {
                   name="email"
                   value={signupInput.email}
                   placeholder="Eg soni@gmail.com"
-                  onChange={(e)=> changeInputHandler(e,"signup")}
-                  required="true"
-                  />
+                  onChange={(e) => changeInputHandler(e, "signup")}
+                  required
+                />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="password">Password</Label>
@@ -72,8 +82,8 @@ const Login = () => {
                   type="password"
                   value={signupInput.password}
                   placeholder="Eg 123"
-                  required="true"
-                  onChange={(e)=> changeInputHandler(e,"signup")}
+                  required
+                  onChange={(e) => changeInputHandler(e, "signup")}
                 />
               </div>
             </CardContent>
@@ -98,8 +108,8 @@ const Login = () => {
                   type="email"
                   value={loginInput.email}
                   placeholder="Eg soni@gmail.com"
-                  onChange={(e)=> changeInputHandler(e,"login")}
-                  required="true"
+                  onChange={(e) => changeInputHandler(e, "login")}
+                  required
                 />
               </div>
               <div className="space-y-1">
@@ -109,8 +119,8 @@ const Login = () => {
                   type="password"
                   value={loginInput.password}
                   placeholder="Eg 123"
-                  onChange={(e)=> changeInputHandler(e,"login")}
-                  required="true"
+                  onChange={(e) => changeInputHandler(e, "login")}
+                  required
                 />
               </div>
             </CardContent>
@@ -123,4 +133,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;
