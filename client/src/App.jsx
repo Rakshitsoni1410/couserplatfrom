@@ -1,11 +1,12 @@
-import React from 'react';
-import Login from './Login'; // Ensure this path is correct
+
+import'./App.css'
+import Login from './pages/Login'; // Ensure this path is correct
 
 function App() {
   return (
-    <div>
-      <Login />
-    </div>
+    <main> 
+      <Login/>
+    </main>
   );
 }
 
