@@ -1,10 +1,11 @@
-import './App.css'
-import Login from './pages/Login'
+import Login from './path-to-Login';
 
-function App(){
+function App() {
   return (
-    
-     <div> login</div>
-  )
+    <div>
+      <Login />
+    </div>
+  );
 }
-export default App
+
+export default App;
