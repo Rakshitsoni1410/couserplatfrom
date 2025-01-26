@@ -29,20 +29,19 @@ const Login = () => {
     }
   };
 
-const handleRegistration=(type)=>{
-  console.log(signupInput);
-  console.log(loginInput);
-  
-}
-
-  const handleLoginSubmit = () => {
-    console.log("Login Data:", loginInput);
-    // Add your login logic here
+  const handleRegistration = (type) => {
+    if (type === "signup") {
+      console.log("Signup Data:", signupInput);
+      // Add your signup logic here
+    } else {
+      console.log("Login Data:", loginInput);
+      // Add your login logic here
+    }
   };
 
   return (
     <div className="flex items-center w-full justify-center">
-      <Tabs defaultValue="account" className="w-[400px]">
+      <Tabs defaultValue="signup" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="signup">Sign Up</TabsTrigger>
           <TabsTrigger value="login">Login</TabsTrigger>
@@ -89,7 +88,7 @@ const handleRegistration=(type)=>{
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={()=>handleRegistration("signup")}>Signup</Button>
+              <Button onClick={() => handleRegistration("signup")}>Signup</Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -126,7 +125,7 @@ const handleRegistration=(type)=>{
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={()=>handleRegistration("login")}>Login</Button>
+              <Button onClick={() => handleRegistration("login")}>Login</Button>
             </CardFooter>
           </Card>
         </TabsContent>
