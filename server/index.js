@@ -1,5 +1,5 @@
 import express from 'express';
-// impORT FILE BUT NOT WORKING WHEN IT implemented in the code so to run i will use the below code 
+
 import dotenv from 'dotenv';
 dotenv.config({});
 
