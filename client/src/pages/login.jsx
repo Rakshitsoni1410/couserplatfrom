@@ -35,7 +35,7 @@ const Login = () => {
       // Add your signup logic here
     } else {
       console.log("Login Data:", loginInput);
-      // Add your login logic here
+      // Add your login logic here 
     }
   };
 
@@ -92,7 +92,6 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full"
                 onClick={() => handleRegistration("signup")}
               >
                 Signup
@@ -136,8 +135,7 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full"
-                onClick={() => handleRegistration("login")}
+                onClick={( ) => handleRegistration("login")}
               >
                 Login
               </Button>
