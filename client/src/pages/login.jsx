@@ -30,14 +30,10 @@ const Login = () => {
   };
 
   const handleRegistration = (type) => {
-    if (type === "signup") {
-      console.log("Signup Data:", signupInput);
-      // Add your signup logic here
-    } else {
-      console.log("Login Data:", loginInput);
-      // Add your login logic here 
-    }
-  };
+    const inputData = type === "signup" ? signupInput : loginInput;
+    console.log(inputData);
+      
+  }
 
   return (
     <div className="flex items-center w-full justify-center min-h-screen bg-gray-100">
