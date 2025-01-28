@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './database/db.js';
+import userRoute from './routes/user.route.js';
 
 dotenv.config();
 
@@ -11,9 +12,16 @@ const app = express();
 
 const PORT = process.env.PORT || 8008;
 
-//api
+// API routes
+app.use("/api/v1/user", userRoute);
 
+app.get("/home", (_, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Welcome to backend"
+    });
+}); // Corrected the placement of the closing brace
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-})
+});
