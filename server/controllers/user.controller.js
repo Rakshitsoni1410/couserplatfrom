@@ -5,23 +5,29 @@ import { generateToken } from '../utils/generateToken.js';
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+
+        // ✅ Check for empty fields
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 msg: "All fields are required"
             });
         }
-        
-        const user = await User.findOne({ email }); // Fixed typo
-        if (user) {
+
+        // ✅ Check if user already exists
+        const userExists = await User.findOne({ email });
+        if (userExists) {
             return res.status(400).json({
                 success: false,
                 msg: "Email already exists"
             });
         }
 
+        // ✅ Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-        await User.create({
+
+        // ✅ Create and store user
+        const newUser = await User.create({
             name,
             email,
             password: hashedPassword,
@@ -29,10 +35,15 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "User created successfully"
+            message: "User created successfully",
+            user: {
+                id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+            }
         });
     } catch (error) {
-        console.log(error);
+        console.error("Error in register:", error);
         return res.status(500).json({
             success: false,
             message: "Failed to register user"
@@ -41,6 +52,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+    console.log('Login API hit');  // This will help you confirm if the route is hit
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -66,12 +78,13 @@ export const login = async (req, res) => {
             });
         }
 
-        return generateToken(res, user, `Welcome back ${user.name}`); // Fixed missing return
+        return generateToken(res, user, `Welcome back ${user.name}`);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({
             success: false,
             message: "Failed to login"
         });
     }
 };
+
