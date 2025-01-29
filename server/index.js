@@ -3,29 +3,22 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from './database/db.js';
 import userRoute from './routes/user.route.js';
-import cors from 'cors'
-
+import cors from 'cors';
 
 dotenv.config();
-
-// Call data connection here
 connectDB();
 
 const app = express();
-
 const PORT = process.env.PORT || 8008;
-// default middleware
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:8008",
-    credentials:true,
-}))
-// API routes
-app.use("/api/v1/user", userRoute);
+    origin: "http://localhost:8008", // Update this if needed
+    credentials: true,
+}));
 
-"http://localhost:8008/api/v1/user/register"
-// Corrected the placement of the closing brace here
+app.use("/api/v1/user", userRoute);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
