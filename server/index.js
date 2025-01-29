@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8008;
 // API routes
 app.use("/api/v1/user", userRoute);
 
-"http://localhost:8008/"
+"http://localhost:8008/api/v1/user/register"
 app.get("/home", (_, res) => {
     res.status(200).json({
         success: true,
