@@ -4,7 +4,7 @@ import { generateToken } from '../utils/generateToken.js';
 
 export const register = async (req, res) => {
     try {
-        const { namr, email, password } = req.body;
+        const { name, email, password } = req.body;
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
