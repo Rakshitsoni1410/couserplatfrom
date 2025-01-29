@@ -20,16 +20,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173", // Ensure this matches the port your frontend is running on
+    origin: "http://localhost:8008", // Ensure this matches the port your frontend is running on
     credentials: true,
 }));
 
 
 
 app.use("/api/v1/user", userRoute); // This will handle all /api/v1/user routes
-app.get("/", (req, res) => {
-    res.send("API is working!");
-});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
