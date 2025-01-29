@@ -20,7 +20,7 @@ app.get("/home", (_, res) => {
         success: true,
         message: "Welcome to backend"
     });
-}); // Corrected the placement of the closing brace
+}); // Corrected the placement of the closing brace here
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
