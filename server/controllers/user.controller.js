@@ -1,4 +1,4 @@
-import {User} from '../models/user.model.js';
+import { User } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
@@ -10,21 +10,23 @@ export const register = async (req, res) => {
                 success: false,
                 msg: "All fields are required"
             });
-
         }
-        const user = await User.findne({ email });
+        
+        const user = await User.findOne({ email }); // Fixed typo
         if (user) {
             return res.status(400).json({
                 success: false,
                 msg: "Email already exists"
             });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         await User.create({
             name,
             email,
             password: hashedPassword,
-        })
+        });
+
         return res.status(201).json({
             success: true,
             message: "User created successfully"
@@ -33,10 +35,11 @@ export const register = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            message: "failed to register user"
-        })
+            message: "Failed to register user"
+        });
     }
-}
+};
+
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -54,6 +57,7 @@ export const login = async (req, res) => {
                 message: "Incorrect email or password"
             });
         }
+
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
             return res.status(400).json({
@@ -61,14 +65,13 @@ export const login = async (req, res) => {
                 message: "Incorrect email or password"
             });
         }
-         generateToken(res, user,`welcome back${user.name}`);
 
-    }
-    catch (error) {
+        return generateToken(res, user, `Welcome back ${user.name}`); // Fixed missing return
+    } catch (error) {
         console.log(error);
         return res.status(500).json({
             success: false,
-            message: "failed to login"
-        })
+            message: "Failed to login"
+        });
     }
-}
+};
