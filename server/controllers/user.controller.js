@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
 export const register = async (req, res) => {
-    try {
+    try {  // This will help you confirm if the route is hit
         const { name, email, password } = req.body;
 
         // ✅ Check for empty fields
@@ -35,7 +35,8 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: "User created successfully",
+            //console.log("User created successfully"),
+             message: "User created successfully",
             user: {
                 id: newUser._id,
                 name: newUser.name,
