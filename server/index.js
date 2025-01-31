@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:8008", // Ensure this matches the port your frontend is running on
+    origin: "http://http://localhost:5173/", // Ensure this matches the port your frontend is running on
     credentials: true,
 }));
 
