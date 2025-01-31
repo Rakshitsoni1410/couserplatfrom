@@ -10,6 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "@/features/api/authApi";
 import { useState } from "react";
 
 const Login = () => {
@@ -19,7 +23,24 @@ const Login = () => {
     password: "",
   });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
-
+  const [
+    registerUser,
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerLoading,
+      isSuccess: registerIsSccess,
+    },
+  ] = useRegisterUserMutation();
+  const [
+    loginUser,
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsLoading,
+      isSuccess: loginIsSuccess,
+    },
+  ] = useLoginUserMutation();
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
     if (type === "signup") {
@@ -32,8 +53,7 @@ const Login = () => {
   const handleRegistration = (type) => {
     const inputData = type === "signup" ? signupInput : loginInput;
     console.log(inputData);
-      
-  }
+  };
 
   return (
     <div className="flex items-center w-full justify-center min-h-screen bg-gray-100">
@@ -87,9 +107,7 @@ const Login = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                onClick={() => handleRegistration("signup")}
-              >
+              <Button onClick={() => handleRegistration("signup")}>
                 Signup
               </Button>
             </CardFooter>
@@ -130,11 +148,7 @@ const Login = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button
-                onClick={( ) => handleRegistration("login")}
-              >
-                Login
-              </Button>
+              <Button onClick={() => handleRegistration("login")}>Login</Button>
             </CardFooter>
           </Card>
         </TabsContent>
