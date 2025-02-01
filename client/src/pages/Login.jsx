@@ -13,9 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useLoginUserMutation,
   useRegisterUserMutation,
-} from "@/features/api/authApi"; // ✅ Make sure this path is correct
+} from "@/features/api/authApi";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ✅ Import useEffect
+import { toast } from "sonner";
 
 const Login = () => {
   const [signupInput, setSignupInput] = useState({
@@ -31,7 +32,7 @@ const Login = () => {
       data: registerData,
       error: registerError,
       isLoading: registerIsLoading,
-      isSuccess: registerIsSccess,
+      isSuccess: registerIsSuccess,
     },
   ] = useRegisterUserMutation();
 
@@ -57,14 +58,24 @@ const Login = () => {
   const handleRegistration = async (type) => {
     const inputData = type === "signup" ? signupInput : loginInput;
     const action = type === "signup" ? registerUser : loginUser;
-
-    try {
-      const response = await action(inputData).unwrap(); // ✅ Unwrapping the response
-      console.log(`${type} successful:`, response);
-    } catch (error) {
-      console.error(`${type} error:`, error);
-    }
+    await action(inputData);
   };
+
+  // ✅ Fix useEffect issues
+  useEffect(() => {
+    if (registerIsSuccess && registerData) {
+      toast.success(registerData.message || "Signup successfully");
+    }
+    if (registerError) {
+      toast.error(registerError?.data?.message || "Signup failed");
+    }
+    if (loginIsSuccess && loginData) {
+      toast.success(loginData.message || "Login successfully");
+    }
+    if (loginError) {
+      toast.error(loginError?.data?.message || "Login failed");
+    }
+  }, [registerIsSuccess, registerData, registerError, loginIsSuccess, loginData, loginError]);
 
   return (
     <div className="flex items-center w-full justify-center min-h-screen bg-gray-100">
