@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from './database/db.js';
 import userRoute from './routes/user.route.js';
-
-
 import cors from 'cors';
 
 dotenv.config();
@@ -20,11 +18,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://http://localhost:5173/", // Ensure this matches the port your frontend is running on
+    origin: "http://localhost:5173", // Removed extra "http://"
     credentials: true,
 }));
-
-
 
 app.use("/api/v1/user", userRoute); // This will handle all /api/v1/user routes
 

@@ -5,17 +5,17 @@ const USER_API = "http://localhost:8008/api/v1/user/";
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "USER_API",
-        Credentials: "include",
-    }),// Add registerUser endpoint
+        baseUrl: USER_API, // ✅ Removed quotes, using the actual variable
+        credentials: "include", // ✅ Fixed lowercase "credentials"
+    }),
     endpoints: (builder) => ({
         registerUser: builder.mutation({
             query: (inputData) => ({
                 url: "register",
                 method: "POST",
                 body: inputData,
-            })
-        }),// Add loginUser endpoint
+            }),
+        }),
         loginUser: builder.mutation({
             query: (inputData) => ({
                 url: "login",
@@ -24,13 +24,14 @@ export const authApi = createApi({
             }),
             async onQueryStarted(_, { queryFulfilled, dispatch }) {
                 try {
-                    const result = await queryFulfilled(arg);
-                    dispatch(userLoggedIn({ user: result.data.user }));
+                    const result = await queryFulfilled(); // ✅ Fixed incorrect function call
+                    dispatch(userLoggedIn({ user: result.data.user })); // ✅ Ensure userLoggedIn is correctly imported
                 } catch (error) {
-                    console.log("Error", error);
+                    console.error("Login Error:", error);
                 }
             },
-        })
+        }),
     }),
 });
+
 export const { useRegisterUserMutation, useLoginUserMutation } = authApi;
