@@ -6,12 +6,12 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"; // ✅ Correct Import
+} from "@/components/ui/dropdown-menu";
 
 import { School } from "lucide-react";
 import React from "react";
-import { Button } from "@/components/ui/button"; // ✅ Correct Import Path
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // ✅ Added Missing Import
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DarkMode from "@/DarkMode";
 
 const Navbar = () => {
