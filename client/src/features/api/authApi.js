@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import {userLoggedIn}from "@/features/authSlice"; // Import the userLoggedIn action creator
+import { userLoggedIn } from "@/features/authSlice"; // ✅ Ensure correct import
 
 const USER_API = "http://localhost:8008/api/v1/user/";
 
@@ -23,12 +23,14 @@ export const authApi = createApi({
                 method: "POST",
                 body: inputData,
             }),
-            async onQueryStarted(_, { queryFulfilled, dispatch }) {
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
-                    // Correct the usage of queryFulfilled
-                    const result = await queryFulfilled(); // Correct function call
+                    const result = await queryFulfilled; // ✅ FIXED: No need for parentheses
                     console.log("Login Success:", result.data); // Debugging
-                    dispatch(userLoggedIn({ user: result.data.user }));
+
+                    if (result.data?.user) {
+                        dispatch(userLoggedIn({ user: result.data.user })); // ✅ Dispatch only if user exists
+                    }
                 } catch (error) {
                     console.error("Login Error:", error);
                 }
