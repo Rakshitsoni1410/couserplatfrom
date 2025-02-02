@@ -11,10 +11,11 @@ import {
 import { School } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button"; // ✅ Correct Import Path
-import { AvatarImage } from "./avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // ✅ Added Missing Import
+import DarkMode from "@/DarkMode";
 
 const Navbar = () => {
-  const user = true;
+  const user = false;
 
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
@@ -28,7 +29,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Section (Dropdown & Buttons) */}
-        <div className="ml-auto mr-6">
+        <div className="flex items-center gap-8">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -45,14 +46,12 @@ const Navbar = () => {
                 align="center"
                 sideOffset={5}
               >
-                {" "}
-                {/* ✅ Centers the dropdown */}
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>My learning</DropdownMenuItem>
+                  <DropdownMenuItem>My Learning</DropdownMenuItem>
                   <DropdownMenuItem>Edit Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                  <DropdownMenuItem>Log Out</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Dashboard</DropdownMenuItem>
@@ -64,6 +63,7 @@ const Navbar = () => {
               <Button>Signup</Button>
             </div>
           )}
+          <DarkMode />
         </div>
       </div>
     </div>
