@@ -75,10 +75,17 @@ const Login = () => {
     if (loginError) {
       toast.error(loginError?.data?.message || "Login failed");
     }
-  }, [registerIsSuccess, registerData, registerError, loginIsSuccess, loginData, loginError]);
+  }, [
+    registerIsSuccess,
+    registerData,
+    registerError,
+    loginIsSuccess,
+    loginData,
+    loginError,
+  ]);
 
   return (
-    <div className="flex items-center w-full justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center w-full justify-center mt-16">
       <Tabs defaultValue="signup" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="signup">Sign Up</TabsTrigger>
