@@ -35,7 +35,6 @@ const Navbar = () => {
     <>
       {/* Navbar Section */}
       <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
-        
         {/* Desktop View */}
         <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center w-full">
           {/* Left Section (Logo & Name) */}
@@ -111,27 +110,14 @@ const MobileNavbar = () => {
             <Menu />
           </Button>
         </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Edit profile</SheetTitle>
-            <SheetDescription>
-              Make changes to your profile here. Click save when you're done.
-            </SheetDescription>
+        <SheetContent className="flex flex-row ">
+          <SheetHeader className="flex flex-row items-center justify-between mt-2">
+            <SheetTitle>E-Learning</SheetTitle>
+            <DarkMode />
           </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input id="name" value="Pedro Duarte" className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                Username
-              </Label>
-              <Input id="username" value="@peduarte" className="col-span-3" />
-            </div>
-          </div>
+          <nav>
+            <span>My Learnin</span>
+          </nav>
           <SheetFooter>
             <SheetClose asChild>
               <Button type="submit">Save changes</Button>
