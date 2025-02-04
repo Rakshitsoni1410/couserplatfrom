@@ -66,6 +66,7 @@ const navigate =useNavigate();
   useEffect(() => {
     if (registerIsSuccess && registerData) {
       toast.success(registerData.message || "Signup successfully");
+      /*navigate("/");*/
     }
     if (registerError) {
       toast.error(registerError?.data?.message || "Signup failed");
