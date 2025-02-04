@@ -18,14 +18,16 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 
 const Navbar = () => {
-  const user = false; // Change to true to test dropdown
-
+  const user = true; // Change to true to test dropdown
+  
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
       {/* Left Section (Logo & Name) - Only for Desktop */}
@@ -33,7 +35,7 @@ const Navbar = () => {
         <School size={30} />
         <h1 className="font-extrabold text-2xl">E-Learning</h1>
       </div>
-      
+
       {/* Desktop View */}
       <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full w-full">
         {/* User icons and dark mode */}
@@ -83,6 +85,7 @@ const Navbar = () => {
 export default Navbar;
 
 const MobileNavbar = () => {
+  const role = "intructor"
   return (
     <div className="z-20">
       <Sheet>
@@ -100,6 +103,19 @@ const MobileNavbar = () => {
             <SheetTitle>E-Learning</SheetTitle>
             <DarkMode />
           </SheetHeader>
+          <Separator className="mr-2" />
+          <nav className="flex flex-col space-y-4">
+            <span>My Learning</span>
+            <span>Edit Profile</span>
+            <p>Logout</p>
+          </nav>
+          {role === "intructor" && (
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button type="submit">Dashboard</Button>
+              </SheetClose>
+            </SheetFooter>
+          )}
         </SheetContent>
       </Sheet>
     </div>
