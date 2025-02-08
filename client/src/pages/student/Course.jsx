@@ -24,6 +24,7 @@ const Course = () => {
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
+            <h1 className="font-medium text-sm">rakshit soni  </h1>
           </div>
         </div>
       </CardContent>
