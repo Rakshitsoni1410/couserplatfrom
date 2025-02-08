@@ -1,4 +1,5 @@
 import { AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import React from "react";
@@ -13,10 +14,9 @@ const Course = () => {
           className="w-full h-36 object-cover rounded-t-lg"
         />
       </div>
-      <CardContent>
+      <CardContent className >
         <h1 className="hover:underline font-bold text-lg truncate">
-          {" "}
-          Next .js complete course in hindi 2025{" "}
+          Next.js complete course in hindi 2025
         </h1>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -24,8 +24,13 @@ const Course = () => {
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <h1 className="font-medium text-sm">rakshit soni  </h1>
+            <h1 className="font-medium text-sm">rakshit soni </h1>
           </div>
+          <Badge
+            className={"bg-blue-600 text-white px-2 py-1 text-xs rounded-full"}
+          >
+            Advance
+          </Badge>
         </div>
       </CardContent>
     </Card>
