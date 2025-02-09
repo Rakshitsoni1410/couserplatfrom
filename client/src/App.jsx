@@ -5,6 +5,7 @@ import Login from "./pages/Login"; // Ensure this path is correct
 import HeroSection from "./pages/student/HeroSection";
 import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
+import MyLearning from "./pages/student/MyLearning";
 
 const appRouter = createBrowserRouter([
   {
@@ -23,6 +24,11 @@ const appRouter = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      
+      {
+        path: "",
+        element: <MyLearning/>,
       },
     ],
   },
