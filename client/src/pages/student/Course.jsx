@@ -14,7 +14,7 @@ const Course = () => {
           className="w-full h-36 object-cover rounded-t-lg"
         />
       </div>
-      <CardContent className="mt-2 ">
+      <CardContent className="px-5 py-4 space-y-3">
         <h1 className="hover:underline font-bold text-lg truncate">
           Next.js complete course in hindi 2025
         </h1>
@@ -31,6 +31,9 @@ const Course = () => {
           >
             Advance
           </Badge>
+        </div>
+        <div className="text lg font-bold ">
+          <span>₹499</span>
         </div>
       </CardContent>
     </Card>
