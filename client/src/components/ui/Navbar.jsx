@@ -7,6 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 
 import React from "react";
 import { Menu, School } from "lucide-react";
