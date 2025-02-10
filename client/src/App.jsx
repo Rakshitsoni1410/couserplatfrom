@@ -1,7 +1,6 @@
-import { RouterProvider } from "react-router-dom";
-import { createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Login"; // Ensure this path is correct
+import Login from "./pages/Login"; // Ensure path is correct
 import HeroSection from "./pages/student/HeroSection";
 import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
@@ -13,22 +12,21 @@ const appRouter = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        path: "/",
+        index: true, // ✅ This makes it the default child route for "/"
         element: (
           <>
             <HeroSection />
-            <Courses/>
+            <Courses />
           </>
         ),
       },
       {
-        path: "login",
+        path: "login", // ✅ No need for "/login", react-router auto-appends
         element: <Login />,
       },
-      
       {
-        path: "",
-        element: <MyLearning/>,
+        path: "my-learning", // ✅ This makes it accessible via "/my-learning"
+        element: <MyLearning />,
       },
     ],
   },
