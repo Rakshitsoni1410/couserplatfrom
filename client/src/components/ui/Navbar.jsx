@@ -57,7 +57,7 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem><Link to="my-learning">My Learning</Link></DropdownMenuItem>
-                  <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                  <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
                   <DropdownMenuItem>Log Out</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -86,7 +86,8 @@ const Navbar = () => {
 export default Navbar;
 
 const MobileNavbar = () => {
-  const role = "intructor"
+  const role = "instructor"; // Fixed typo: "intructor" -> "instructor"
+
   return (
     <div className="z-20">
       <Sheet>
@@ -106,11 +107,11 @@ const MobileNavbar = () => {
           </SheetHeader>
           <Separator className="mr-2" />
           <nav className="flex flex-col space-y-4">
-            <span>My Learning</span>
-            <span>Edit Profile</span>
+            <Link to="my-learning">My Learning</Link>
+            <Link to="profile">Edit Profile</Link>
             <p>Logout</p>
           </nav>
-          {role === "intructor" && (
+          {role === "instructor" && (
             <SheetFooter>
               <SheetClose asChild>
                 <Button type="submit">Dashboard</Button>
