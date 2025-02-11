@@ -1,4 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import React from "react";
 
 const Profile = () => {
@@ -13,12 +15,35 @@ const Profile = () => {
           </Avatar>
         </div>
         <div>
-          <div>
+          <div className="mb-2">
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ml-2">
               Name:
-              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2"> Rakshit soni</span>
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                Rakshit soni
+              </span>
             </h1>
           </div>
+          <div className="mb-2">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ml-2">
+              Email:
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                rakshitsoni@gmail.com
+              </span>
+            </h1>
+          </div>
+          <div className="mb-2">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ml-2">
+              Role:
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
+                INSTRUCTOR
+              </span>
+            </h1>
+          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Edit Profile</Button>
+            </DialogTrigger>
+          </Dialog>
         </div>
       </div>
     </div>
