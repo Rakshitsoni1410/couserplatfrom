@@ -1,9 +1,21 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import React from "react";
 
 const Profile = () => {
+  const isLoading =false;
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
       <h1 className="font-bold text-2xl text-center md:text-left">Profile</h1>
@@ -41,8 +53,49 @@ const Profile = () => {
           </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Edit Profile</Button>
+              <Button size="sm" className="mt-2 ">
+                Edit Profile
+              </Button>
             </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Profile</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. click save when you are
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4 ">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label>Name</Label>
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    className="col-span-3
+                             "
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label>Profile Photo</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    className="col-span-3
+                             "
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+              <Button disabled="isLoading ">
+                {
+                  isLoading ?( 
+                  <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin"/>please wait 
+                  </>):"Save changes"
+                   }
+              </Button>
+              </DialogFooter>
+            </DialogContent>
           </Dialog>
         </div>
       </div>
