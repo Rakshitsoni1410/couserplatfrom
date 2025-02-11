@@ -9,7 +9,7 @@ const Course = () => {
     <Card className="overflow-hidden rounded-lg dark:bg-gray-800 bg-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 w-80">
       <div className="relative">
         <img
-          src="https://th.bing.com/th/id/OIP.EswnIVdSgBgzHz4sMPYA7gHaFj?w=241&h=181&c=7&r=0&o=5&dpr=1.3&pid=1.7"
+          src="https://images.ctfassets.net/23aumh6u8s0i/6pjUKboBuFLvCKkE3esaFA/5f2101d6d2add5c615db5e98a553fc44/nextjs.jpeg"
           alt="course"
           className="w-full h-36 object-cover rounded-t-lg"
         />
