@@ -7,10 +7,18 @@ const Profile = () => {
       <h1 className="font-bold text-2xl text-center md:text-left">Profile</h1>
       <div className="flex flex-col md:flex-row  items-center md:items-start gap-8 my-5">
         <div className="flex flex-col items-center">
-        <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+          <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+        <div>
+          <div>
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ml-2">
+              Name:
+              <span className="font-normal text-gray-700 dark:text-gray-300 ml-2"> Rakshit soni</span>
+            </h1>
+          </div>
         </div>
       </div>
     </div>
@@ -18,6 +26,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-
-
