@@ -17,7 +17,7 @@ import Course from "./Course";
 
 const Profile = () => {
   const isLoading = false;
-  const enrolledCourses = [1,2];
+  const enrolledCourses = [1];
   
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">

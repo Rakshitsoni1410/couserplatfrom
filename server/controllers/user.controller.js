@@ -35,13 +35,8 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            //console.log("User created successfully"),
-             message: "User created successfully",
-            user: {
-                id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-            }
+            message: "User created successfully",
+
         });
     } catch (error) {
         console.error("Error in register:", error);
@@ -53,7 +48,6 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    console.log('Login API hit');  // This will help you confirm if the route is hit
     try {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -89,3 +83,30 @@ export const login = async (req, res) => {
     }
 };
 
+export const logout = async (_, res) => {
+    try {
+        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+            message: "log out successfully.",
+            success: true,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to logout"
+        })
+
+    }
+}
+export const getUSerProfile = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to load user"
+        })
+
+    }
+}
