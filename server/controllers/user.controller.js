@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
 
 export const register = async (req, res) => {
-    try {  // This will help you confirm if the route is hit
+    try {
         const { name, email, password } = req.body;
 
         // ✅ Check for empty fields
@@ -36,7 +36,6 @@ export const register = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "User created successfully",
-
         });
     } catch (error) {
         console.error("Error in register:", error);
@@ -86,38 +85,37 @@ export const login = async (req, res) => {
 export const logout = async (_, res) => {
     try {
         return res.status(200).cookie("token", "", { maxAge: 0 }).json({
-            message: "log out successfully.",
+            message: "Log out successfully.",
             success: true,
-        })
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             success: false,
             message: "Failed to logout"
-        })
-
+        });
     }
-}
-export const getUSerProfile = async (req, res) => {
+};
+
+export const getUserProfile = async (req, res) => {  // ✅ Fixed function name
     try {
         const userId = req.id;
-        const user = await User.findById(userId).select("-password")
+        const user = await User.findById(userId).select("-password");
         if (!user) {
             return res.status(404).json({
                 message: "Profile not found",
                 success: false
-            })
+            });
         }
         return res.status(200).json({
             success: true,
             user
-        })
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             success: false,
             message: "Failed to load user"
-        })
-
+        });
     }
-}
+};

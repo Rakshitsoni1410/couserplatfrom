@@ -14,9 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import Course from "./Course";
+import { useLoadUserQuery } from "@/features/api/authApi";
 
 const Profile = () => {
-  const isLoading = false;
+  const{data,isLoading}= useLoadUserQuery();
+  console.log(data);
+  
   const enrolledCourses = [1];
   
   return (
