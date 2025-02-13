@@ -1,6 +1,7 @@
 import { User } from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
+import { deleteMedia, uploadMedia } from '../utils/cloudinary.js';
 
 export const register = async (req, res) => {
     try {
@@ -97,7 +98,7 @@ export const logout = async (_, res) => {
     }
 };
 
-export const getUserProfile = async (req, res) => {  // ✅ Fixed function name
+export const getUserProfile = async (req, res) => {
     try {
         const userId = req.id;
         const user = await User.findById(userId).select("-password");
@@ -122,24 +123,39 @@ export const getUserProfile = async (req, res) => {  // ✅ Fixed function name
 
 export const updateProfile = async (req, res) => {
     try {
-            const userId = req.id;
-            const{nane} = req.body;
-            const profilePhoto = req.file;
+        const userId = req.id;
+        const { name } = req.body; // Fixed typo
+        const profilePhoto = req.file;
 
-            const user = await User.findByIdAndUpdate(userId);
-            if (!user) {
-                return res.status(404).json({
-                    message: "user  not found",
-                    success:false,
-                })
-            }
-            const upadatedData ={name,photoUrl}
-            
+        const user = await User.findByIdAndUpdate(userId);
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found", // Capitalized 'User'
+                success: false,
+            })
+        }
+        // Extract public id of the old image from the URL if it exists
+        if (user.photoUrl) {
+            const publicId = user.photoUrl.split("/").pop().split(".")[0]; // Extract public ID
+            deleteMedia(publicId);  // Corrected function call
+        }
+        // Update new photo
+        const cloudResponse = await uploadMedia(profilePhoto.path);
+        const photoUrl = cloudResponse.secure_url;
+
+        const updatedData = { name, photoUrl }; // Corrected variable name
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true }).select("-password");
+        return res.status(200).json({
+            success: true,
+            user: updatedUser,
+            message: "Profile updated successfully"
+        });
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             success: false,
-            message: "Failed to upadate profile"
+            message: "Failed to update profile"  // Corrected typo
         });
     }
-}
+};
