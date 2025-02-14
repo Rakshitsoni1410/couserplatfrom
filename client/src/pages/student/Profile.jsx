@@ -27,7 +27,7 @@ const Profile = () => {
   const { data, isLoading,refetch } = useLoadUserQuery();
   const [
     updateUser,
-    { isLoading: updateUserLoading, isError, error, isSuccess },
+    { data:updateUserData  ,isLoading: updateUserLoading, isError, error, isSuccess },
   ] = useUpdateUserMutation();
 
   const onChangeHandler = (e) => {
@@ -50,7 +50,7 @@ const Profile = () => {
     if (isError) {
       toast.error(error?.message || "Failed to update profile");
     }
-  }, [isSuccess, isError, error]);
+  }, [isSuccess, isError, error,updateUserData]);
 
   if (isLoading) return <h1>Profile loading ......</h1>;
 
