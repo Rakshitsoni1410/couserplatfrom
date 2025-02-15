@@ -26,11 +26,8 @@ export const authApi = createApi({
             async onQueryStarted(arg, { queryFulfilled, dispatch }) {
                 try {
                     const result = await queryFulfilled; // ✅ FIXED: No need for parentheses
-                    console.log("Login Success:", result.data); // Debugging
+                    dispatch(userLoggedIn({ user: result.data.user })); // ✅ Dispatch only if user exists
 
-                    if (result.data?.user) {
-                        dispatch(userLoggedIn({ user: result.data.user })); // ✅ Dispatch only if user exists
-                    }
                 } catch (error) {
                     console.error("Login Error:", error);
                 }
@@ -40,13 +37,22 @@ export const authApi = createApi({
             query: () => ({
                 url: "logout",
                 method: "GET",
-            })
+            }),
         }),
         loadUser: builder.query({
             query: () => ({
                 url: "profile",
                 method: "GET"
-            })
+            }),
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled; // ✅ FIXED: No need for parentheses
+                    dispatch(userLoggedIn({ user: result.data.user })); // ✅ Dispatch only if user exists
+
+                } catch (error) {
+                    console.error("Login Error:", error);
+                }
+            },
         }),
         updateUser: builder.mutation({
             query: (formData) => ({
