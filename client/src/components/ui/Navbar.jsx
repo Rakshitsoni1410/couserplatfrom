@@ -27,9 +27,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"; // Check this import path
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const user = true; // Change to true to test dropdown (replace with actual authentication state)
+ const {user} =useSelector(store=>store.auth)
   const navigate = useNavigate(); // Use useNavigate hook
 
   const [logoutUser, { data, isSuccess }] = useLogoutUserMutation(); // Correctly call the useLogoutUserMutation hook
@@ -37,6 +38,7 @@ const Navbar = () => {
   const logoutHandler = async () => {
     await logoutUser(); // Trigger the logout mutation
   };
+console.log(user);
 
   useEffect(() => {
     if (isSuccess) {
@@ -62,7 +64,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                     src="https://github.com/shadcn.png"
+                     src={ user?.photoUrl ||"https://github.com/shadcn.png"}
                     alt="Avatar"
                   />
                   <AvatarFallback>CN</AvatarFallback>
