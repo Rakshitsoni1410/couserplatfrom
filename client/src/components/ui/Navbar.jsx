@@ -30,7 +30,7 @@ import {
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
- const {user} =useSelector(store=>store.auth)
+  const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate(); // Use useNavigate hook
 
   const [logoutUser, { data, isSuccess }] = useLogoutUserMutation(); // Correctly call the useLogoutUserMutation hook
@@ -38,7 +38,7 @@ const Navbar = () => {
   const logoutHandler = async () => {
     await logoutUser(); // Trigger the logout mutation
   };
-console.log(user);
+  console.log(user);
 
   useEffect(() => {
     if (isSuccess) {
@@ -64,7 +64,7 @@ console.log(user);
               <DropdownMenuTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                     src={ user?.photoUrl ||"https://github.com/shadcn.png"}
+                    src={user?.photoUrl || "https://github.com/shadcn.png"}
                     alt="Avatar"
                   />
                   <AvatarFallback>CN</AvatarFallback>
@@ -84,14 +84,20 @@ console.log(user);
                     Log Out
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                {user.role === "instructor" && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline">Login</Button>
-              <Button>Signup</Button>
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button onClick={() => navigate("/login")}>Signup</Button>
             </div>
           )}
           <DarkMode />
