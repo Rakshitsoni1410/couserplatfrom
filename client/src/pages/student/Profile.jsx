@@ -24,10 +24,16 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
 
-  const { data, isLoading,refetch } = useLoadUserQuery();
+  const { data, isLoading, refetch } = useLoadUserQuery();
   const [
     updateUser,
-    { data:updateUserData  ,isLoading: updateUserLoading, isError, error, isSuccess },
+    {
+      data: updateUserData,
+      isLoading: updateUserLoading,
+      isError,
+      error,
+      isSuccess,
+    },
   ] = useUpdateUserMutation();
 
   const onChangeHandler = (e) => {
@@ -43,7 +49,7 @@ const Profile = () => {
   };
   useEffect(() => {
     refetch();
-  },[])
+  }, []);
   useEffect(() => {
     if (isSuccess) {
       refetch();
@@ -52,7 +58,7 @@ const Profile = () => {
     if (isError) {
       toast.error(error?.message || "Failed to update profile");
     }
-  }, [isSuccess, isError, error,updateUserData]);
+  }, [isSuccess, isError, error, updateUserData]);
 
   if (isLoading) return <h1>Profile loading ......</h1>;
 
