@@ -1,5 +1,6 @@
 import { ChartNoAxesColumn, Square, SquareLibrary } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -9,7 +10,8 @@ const Sidebar = () => {
           <ChartNoAxesColumn size={22} />
           <h1>Dasboard</h1>
         </Link>
-        <SquareLibrary/>
+        <SquareLibrary size={22} />
+        <h1>Courses </h1>
       </div>
     </div>
   );
