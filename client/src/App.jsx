@@ -26,7 +26,7 @@ const appRouter = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "my-learning", 
+        path: "my-learning",
         element: <MyLearning />,
       },
       {
@@ -38,7 +38,11 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={appRouter} />;
+  return (
+    <main>
+      <RouterProvider router={appRouter} />;
+    </main>
+  );
 }
 
 export default App;
