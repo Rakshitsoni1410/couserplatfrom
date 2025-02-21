@@ -1,9 +1,18 @@
-import React from 'react'
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 
 const Dashboard = () => {
   return (
-    <div className='grid gap-7 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'></div>
-  )
-}
+    <div className="grid gap-7 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <Card>
+        <CardHeader >
+          <CardTitle>
+            Total sales 
+          </CardTitle>
+        </CardHeader>
+      </Card>
+    </div>
+  );
+};
 
-export default Dashboard
+export default Dashboard;
