@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const invoices = [
   { invoice: "INV001", paymentStatus: "Paid", totalAmount: 250.0, paymentMethod: "Credit Card" },
@@ -21,14 +22,13 @@ const invoices = [
   { invoice: "INV007", paymentStatus: "Unpaid", totalAmount: 300.0, paymentMethod: "Credit Card" },
 ];
 
-function InvoiceTable() {
+const CourseTable = () => {
+  const navigate = useNavigate();
   const totalAmount = invoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0);
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <Button>Create a new invoice</Button>
-      </div>
+    <div>
+      <Button onClick={() => navigate(`create`)}>Create a new Course</Button>
       <Table>
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
@@ -58,6 +58,6 @@ function InvoiceTable() {
       </Table>
     </div>
   );
-}
+};
 
-export default InvoiceTable;
+export default CourseTable;

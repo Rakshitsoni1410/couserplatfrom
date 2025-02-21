@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import Login from "./pages/Login"; // Ensure path is correct
+import Login from "./pages/Login";
 import HeroSection from "./pages/student/HeroSection";
 import MainLayout from "./layout/MainLayout";
 import Courses from "./pages/student/Courses";
@@ -9,6 +9,7 @@ import Profile from "./pages/student/Profile";
 import Sidebar from "./pages/admin/lecture/Sidebar";
 import Dashboard from "./pages/admin/Dashboard";
 import CourseTable from "./pages/admin/course/CourseTable";
+import AddCourse from "./pages/admin/course/AddCourse";
 
 const appRouter = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const appRouter = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        index: true, // ✅ This makes it the default child route for "/"
+        index: true,
         element: (
           <>
             <HeroSection />
@@ -25,7 +26,7 @@ const appRouter = createBrowserRouter([
         ),
       },
       {
-        path: "login", // ✅ No need for "/login", react-router auto-appends
+        path: "login",
         element: <Login />,
       },
       {
@@ -33,21 +34,25 @@ const appRouter = createBrowserRouter([
         element: <MyLearning />,
       },
       {
-        path: "profile", // corrected path without space
+        path: "profile",
         element: <Profile />,
       },
-      // admin routes  start  from here
+      // Admin Routes
       {
         path: "admin",
         element: <Sidebar />,
         children: [
           {
             path: "dashboard",
-            element: <Dashboard/>,
+            element: <Dashboard />,
           },
           {
             path: "course",
-            element: <CourseTable/>,
+            element: <CourseTable />,
+          },
+          {
+            path: "course/create",
+            element: <AddCourse />,
           },
         ],
       },
@@ -58,8 +63,8 @@ const appRouter = createBrowserRouter([
 function App() {
   return (
     <main>
-      <RouterProvider router={appRouter} />;
-    </main>
+      <RouterProvider router={appRouter} />
+    </main> // Removed extra semicolon
   );
 }
 
