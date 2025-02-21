@@ -43,7 +43,7 @@ const appRouter = createBrowserRouter([
         children: [
           {
             path: "dashboard",
-            element: <Dashboard />,
+            element: <Dashboard/>,
           },
           {
             path: "course",
