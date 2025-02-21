@@ -8,6 +8,7 @@ import MyLearning from "./pages/student/MyLearning";
 import Profile from "./pages/student/Profile";
 import Sidebar from "./pages/admin/lecture/Sidebar";
 import Dashboard from "./pages/admin/Dashboard";
+import CourseTable from "./pages/admin/course/CourseTable";
 
 const appRouter = createBrowserRouter([
   {
