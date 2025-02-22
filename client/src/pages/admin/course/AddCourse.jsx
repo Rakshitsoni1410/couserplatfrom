@@ -19,6 +19,7 @@ import { toast } from "sonner";
 const AddCourse = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [coursePrice, setCoursePrice] = useState("");
 
   const [createCourse, { data, isLoading, error, isSuccess }] =
     useCreateCourseMutation();
@@ -30,22 +31,22 @@ const AddCourse = () => {
   };
 
   const createCourseHandler = async () => {
-    await createCourse({ courseTitle, category });
+    await createCourse({ courseTitle, category, coursePrice });
   };
 
   // for displaying toast
-  useEffect(()=>{
-    if(isSuccess){
-        toast.success(data?.message || "Course created.");
-        navigate("/admin/course");
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Course created.");
+      navigate("/admin/course");
     }
-  },[isSuccess, error])
+  }, [isSuccess, error]);
 
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">
         <h1 className="font-bold text-xl">
-          Lets add course, add some basic course details for your new course
+          Let's add a course, add some basic course details for your new course
         </h1>
         <p className="text-sm">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus,
@@ -90,6 +91,15 @@ const AddCourse = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
+        </div>
+        <div>
+          <Label>Price</Label>
+          <Input
+            type="number"
+            value={coursePrice}
+            onChange={(e) => setCoursePrice(e.target.value)}
+            placeholder="Enter Course Price"
+          />
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={() => navigate("/admin/course")}>
