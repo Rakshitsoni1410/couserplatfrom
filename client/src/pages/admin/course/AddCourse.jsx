@@ -30,7 +30,7 @@ const AddCourse = () => {
   };
 
   const createCourseHandler = async () => {
-    await createCourse({ courseTitle, category, coursePrice });
+    await createCourse({ courseTitle, category });
   };
 
   // for displaying toast
