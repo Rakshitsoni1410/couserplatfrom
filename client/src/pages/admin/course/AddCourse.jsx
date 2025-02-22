@@ -34,18 +34,18 @@ const AddCourse = () => {
   };
 
   // for displaying toast
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success(data?.message || "Course created.");
-      navigate("/admin/course");
+  useEffect(()=>{
+    if(isSuccess){
+        toast.success(data?.message || "Course created.");
+        navigate("/admin/course");
     }
-  }, [isSuccess, error]);
+  },[isSuccess, error])
 
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">
         <h1 className="font-bold text-xl">
-          Let's add a course, add some basic course details for your new course
+          Lets add course, add some basic course details for your new course
         </h1>
         <p className="text-sm">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus,
@@ -90,10 +90,6 @@ const AddCourse = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
-        <div>
-          <Label>Price</Label>
-          
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={() => navigate("/admin/course")}>

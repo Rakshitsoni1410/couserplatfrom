@@ -17,6 +17,6 @@ export const courseApi = createApi({
             })
         })
     })
-});
+})
 
 export const { useCreateCourseMutation } = courseApi;
