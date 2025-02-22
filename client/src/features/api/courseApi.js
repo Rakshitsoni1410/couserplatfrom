@@ -6,17 +6,24 @@ export const courseApi = createApi({
     reducerPath: 'courseApi',
     baseQuery: fetchBaseQuery({
         baseUrl: COURSE_API,
-        credentials: "include"
+        credentials: "include",
     }),
     endpoints: (builder) => ({
         createCourse: builder.mutation({
-            query: ({ courseTitle, category }) => ({
+            query: ({ courseTitle, category, coursePrice = 0 }) => ({
                 url: "/",
                 method: "POST",
-                body: { courseTitle, category },
+                body: { courseTitle, category, coursePrice },
+            })
+        }),
+        getCreatorCourses: builder.query({
+            query: () => ({
+                url: "/",
+                method: "GET",
             })
         })
     })
 })
 
-export const { useCreateCourseMutation } = courseApi;
+// ✅ Export both hooks
+export const { useCreateCourseMutation, useGetCreatorCoursesQuery } = courseApi;

@@ -10,63 +10,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+import { useCreateCourseMutation } from "@/features/api/courseApi"; // ✅ Correct import
 
-const CourseTable = () => {
-    const {data, isLoading} = useGetCreatorCourseQuery();
+const AddCourse = () => {
+  const [courseTitle, setCourseTitle] = useState("");
+  const [category, setCategory] = useState("");
+  
+  const { data, isLoading } = useCreateCourseMutation(); // ✅ Fetch Courses
   const navigate = useNavigate();
 
-  if(isLoading) return <h1>Loading...</h1>
- 
+  // ✅ Fix function syntax
+  const getSelectedCategory = (value) => {
+    setCategory(value);
+  };
+
+  // ✅ Placeholder function for course creation
+  const createCourseHandler = async () => {
+    console.log("Creating course:", { courseTitle, category });
+  };
+
+  if (isLoading) return <h1>Loading...</h1>;
+
   return (
     <div>
-      <Button onClick={() => navigate(`create`)}>Create a new course</Button>
+      <Button onClick={() => navigate("create")}>Create a new course</Button>
       <Table>
         <TableCaption>A list of your recent courses.</TableCaption>
         <TableHeader>
@@ -78,17 +48,35 @@ const CourseTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          
+          {data?.map((course) => (
+            <TableRow key={course._id}>
+              <TableCell>${course.coursePrice || "Free"}</TableCell>
+              <TableCell>
+                <Badge>{course.isPublished ? "Published" : "Draft"}</Badge>
+              </TableCell>
+              <TableCell>{course.courseTitle}</TableCell>
+              <TableCell className="text-right">
+                <Button
+                  onClick={() => navigate(`/admin/course/${course._id}`)}
+                  variant="outline"
+                >
+                  Edit
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$</TableCell>
+            <TableCell className="text-right">
+              ${data?.reduce((acc, course) => acc + (course.coursePrice || 0), 0)}
+            </TableCell>
           </TableRow>
-        </TableFooter>
-        </TableBody>
+        </TableFooter>  
       </Table>
     </div>
   );
 };
 
-export default CourseTable;
+export default AddCourse; // ✅ Export matches component name
