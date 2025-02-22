@@ -9,7 +9,7 @@ import Profile from "./pages/student/Profile";
 import Sidebar from "./pages/admin/lecture/Sidebar";
 import Dashboard from "./pages/admin/Dashboard";
 import CourseTable from "./pages/admin/course/CourseTable";
-import AddCourse from "./pages/admin/course/AddCourse";
+import AddCourse from "./pages/admin/course/AddCourse"; // Ensure AddCourse.jsx has a default export
 
 const appRouter = createBrowserRouter([
   {
@@ -64,7 +64,7 @@ function App() {
   return (
     <main>
       <RouterProvider router={appRouter} />
-    </main> // Removed extra semicolon
+    </main>
   );
 }
 
