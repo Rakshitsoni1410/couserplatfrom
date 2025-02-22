@@ -19,7 +19,6 @@ import { toast } from "sonner";
 const AddCourse = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [coursePrice, setCoursePrice] = useState("");
 
   const [createCourse, { data, isLoading, error, isSuccess }] =
     useCreateCourseMutation();
@@ -94,12 +93,7 @@ const AddCourse = () => {
         </div>
         <div>
           <Label>Price</Label>
-          <Input
-            type="number"
-            value={coursePrice}
-            onChange={(e) => setCoursePrice(e.target.value)}
-            placeholder="Enter Course Price"
-          />
+          
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={() => navigate("/admin/course")}>
