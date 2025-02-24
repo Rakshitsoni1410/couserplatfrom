@@ -22,10 +22,9 @@ const AddCourse = () => {
   const { data, isLoading } = useCreateCourseMutation(); // ✅ Fetch Courses
   const navigate = useNavigate();
 
-  // ✅ Fix function syntax
-  const getSelectedCategory = (value) => {
-    setCategory(value);
-  };
+  const CourseTable =()=>{
+    const {data,isLoading}= useGetCreatorCoursesQuery();
+  }
 
   // ✅ Placeholder function for course creation
   const createCourseHandler = async () => {
@@ -33,7 +32,8 @@ const AddCourse = () => {
   };
 
   if (isLoading) return <h1>Loading...</h1>;
-
+ console.log("data ->".data);
+ 
   return (
     <div>
       <Button onClick={() => navigate("create")}>Create a new course</Button>

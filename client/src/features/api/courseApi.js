@@ -18,11 +18,12 @@ export const courseApi = createApi({
         }),
         getCreatorCourses: builder.query({
             query: () => ({
-                url: "/",
+                url: "/", // Example: If your API provides all courses at this route
                 method: "GET",
             })
         })
-    })
+        
+    })  
 })
 
 // ✅ Export both hooks
