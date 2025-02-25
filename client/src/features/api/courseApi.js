@@ -16,9 +16,9 @@ export const courseApi = createApi({
                 body: { courseTitle, category, coursePrice },
             })
         }),
-        getCreatorCourses: builder.query({
+        getCreatorCourse: builder.query({
             query: () => ({
-                url: "/", // Example: If your API provides all courses at this route
+                url: "", // Example: If your API provides all courses at this route
                 method: "GET",
             })
         })
@@ -27,4 +27,4 @@ export const courseApi = createApi({
 })
 
 // ✅ Export both hooks
-export const { useCreateCourseMutation, useGetCreatorCoursesQuery } = courseApi;
+export const { useCreateCourseMutation, useGetCreatorCourseQuery } = courseApi;
