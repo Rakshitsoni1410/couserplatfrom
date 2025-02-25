@@ -16,7 +16,7 @@ const EditCourse = () => {
           </Button>
         </Link>
       </div>
-      <CourseTab />
+      <CourseTab/>
     </div>
   );
 };
