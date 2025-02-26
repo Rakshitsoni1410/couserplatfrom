@@ -118,15 +118,9 @@ const CourseTab = () => {
                   <SelectLabel>Category</SelectLabel>
                   <SelectItem value="Next JS">Next JS</SelectItem>
                   <SelectItem value="Data Science">Data Science</SelectItem>
-                  <SelectItem value="Frontend Development">
-                    Frontend Development
-                  </SelectItem>
-                  <SelectItem value="Fullstack Development">
-                    Fullstack Development
-                  </SelectItem>
-                  <SelectItem value="MERN Stack Development">
-                    MERN Stack Development
-                  </SelectItem>
+                  <SelectItem value="Frontend Development">Frontend Development</SelectItem>
+                  <SelectItem value="Fullstack Development">  Fullstack Development</SelectItem>
+                  <SelectItem value="MERN Stack Development">MERN Stack Development</SelectItem>
                   <SelectItem value="Javascript">Javascript</SelectItem>
                   <SelectItem value="Python">Python</SelectItem>
                   <SelectItem value="Docker">Docker</SelectItem>
