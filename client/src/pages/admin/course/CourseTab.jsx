@@ -22,6 +22,7 @@ import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "react-quill/dist/quill.snow.css";
+import { useEditCourseMutation } from "@/features/api/courseApi";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -35,21 +36,25 @@ const CourseTab = () => {
   });
   const [previewThumbnail, setPreviewThumbnail] = useState(""); // Corrected typo
   const navigate = useNavigate();
-  
+
+  const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation();
+
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
-  
+
   const selectCategory = (value) => {
     setInput({ ...input, category: value });
   };
-  
+
   const selectCourseLevel = (value) => {
     setInput({ ...input, courseLevel: value });
   };
-  
-  const selectThumbnail = (e) => { // Corrected function name
+
+  const selectThumbnail = (e) => {
+    // Corrected function name
     const file = e.target.files?.[0];
     if (file) {
       setInput({ ...input, courseThumbnail: file }); // Corrected typo
@@ -58,11 +63,25 @@ const CourseTab = () => {
       fileReader.readAsDataURL(file);
     }
   };
-  const updateCourseHandler =()=>{
-    console.log(input);
-    
-  }
-  const isLoading = false;
+  const updateCourseHandler = async () => {
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
+    await editCourse(formData);
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.meassage || "Course updated successfully");
+    }
+    if (error) {
+      toast.error(error.data.meassage || "Failed to update course");
+    }
+  }, [isSuccess, error]);
   const isPublished = false;
 
   return (
@@ -118,9 +137,16 @@ const CourseTab = () => {
                   <SelectLabel>Category</SelectLabel>
                   <SelectItem value="Next JS">Next JS</SelectItem>
                   <SelectItem value="Data Science">Data Science</SelectItem>
-                  <SelectItem value="Frontend Development">Frontend Development</SelectItem>
-                  <SelectItem value="Fullstack Development">  Fullstack Development</SelectItem>
-                  <SelectItem value="MERN Stack Development">MERN Stack Development</SelectItem>
+                  <SelectItem value="Frontend Development">
+                    Frontend Development
+                  </SelectItem>
+                  <SelectItem value="Fullstack Development">
+                    {" "}
+                    Fullstack Development
+                  </SelectItem>
+                  <SelectItem value="MERN Stack Development">
+                    MERN Stack Development
+                  </SelectItem>
                   <SelectItem value="Javascript">Javascript</SelectItem>
                   <SelectItem value="Python">Python</SelectItem>
                   <SelectItem value="Docker">Docker</SelectItem>
