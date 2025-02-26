@@ -1,5 +1,6 @@
 import { Course } from "../models/course.model.js";
 import {deleteMediaFromCloudinary} from "../utils/cloudinary.js";
+import { uploadMedia } from "../utils/cloudinary.js";
 
 export const createCourse = async (req, res) => {
     try {

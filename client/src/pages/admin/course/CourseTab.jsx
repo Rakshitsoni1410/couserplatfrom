@@ -9,6 +9,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/ui/RichTextEditor";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -18,9 +20,11 @@ import {
   SelectValue,
   SelectLabel,
 } from "@/components/ui/select";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { Loader2 } from "lucide-react";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import { useEditCourseMutation } from "@/features/api/courseApi";
 
@@ -32,11 +36,12 @@ const CourseTab = () => {
     category: "",
     courseLevel: "",
     coursePrice: "",
-    courseThumbnail: "", // Corrected typo
+    courseThumbnail: "",
   });
-  const [previewThumbnail, setPreviewThumbnail] = useState(""); // Corrected typo
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-
+  const params = useParams();
+  const courseId = params.courseId;
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
 
@@ -54,15 +59,15 @@ const CourseTab = () => {
   };
 
   const selectThumbnail = (e) => {
-    // Corrected function name
     const file = e.target.files?.[0];
     if (file) {
-      setInput({ ...input, courseThumbnail: file }); // Corrected typo
+      setInput({ ...input, courseThumbnail: file });
       const fileReader = new FileReader();
-      fileReader.onload = (e) => setPreviewThumbnail(fileReader.result); // Corrected typo
+      fileReader.onload = (event) => setPreviewThumbnail(event.target.result);
       fileReader.readAsDataURL(file);
     }
   };
+
   const updateCourseHandler = async () => {
     const formData = new FormData();
     formData.append("courseTitle", input.courseTitle);
@@ -72,16 +77,19 @@ const CourseTab = () => {
     formData.append("courseLevel", input.courseLevel);
     formData.append("coursePrice", input.coursePrice);
     formData.append("courseThumbnail", input.courseThumbnail);
-    await editCourse(formData);
+
+    await editCourse({ courseId, formData });
   };
+
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data.meassage || "Course updated successfully");
+      toast.success(data?.message || "Course updated successfully");
     }
     if (error) {
-      toast.error(error.data.meassage || "Failed to update course");
+      toast.error(error?.data?.message || "Failed to update course");
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, data]);
+
   const isPublished = false;
 
   return (
@@ -141,7 +149,6 @@ const CourseTab = () => {
                     Frontend Development
                   </SelectItem>
                   <SelectItem value="Fullstack Development">
-                    {" "}
                     Fullstack Development
                   </SelectItem>
                   <SelectItem value="MERN Stack Development">
@@ -191,14 +198,14 @@ const CourseTab = () => {
           <Label>Course Thumbnail</Label>
           <Input
             type="file"
-            onChange={selectThumbnail} // Corrected function name
+            onChange={selectThumbnail}
             accept="image/*"
-            className="w-fit" // Corrected class name
+            className="w-fit"
           />
-          {previewThumbnail && ( // Corrected variable name
+          {previewThumbnail && (
             <img
               src={previewThumbnail}
-              className="w-40 my-2" // Corrected class name
+              className="w-40 my-2"
               alt="Course Thumbnail"
             />
           )}
