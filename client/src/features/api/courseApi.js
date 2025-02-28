@@ -31,9 +31,15 @@ export const courseApi = createApi({
                 method: "PUT",
                 body: formData
             }),
-        })
+        }),
+        getCourseById: builder.query({
+            query: (courseId) => ({
+                url: `/${courseId}`,
+                method: "GET",
+            }),
+        }),
     })
 })
 
 // ✅ Export both hooks
-export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation } = courseApi;
+export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation,useGetCourseByIdQuery } = courseApi;

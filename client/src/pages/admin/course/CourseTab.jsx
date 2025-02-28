@@ -25,7 +25,7 @@ import {
 
 import { Loader2 } from "lucide-react";
 import "react-quill/dist/quill.snow.css";
-import { useEditCourseMutation } from "@/features/api/courseApi";
+import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -37,10 +37,26 @@ const CourseTab = () => {
     coursePrice: "",
     courseThumbnail: "",
   });
-
+  const params = useParams();
+  const courseId = params.courseId;
+  const{data:courseByIdData,isLoading:courseByIdLoading}= useGetCourseByIdQuery(courseId);
+  const course = courseByIdData?.course;
+  useEffect(()=>{
+    if(course){
+      setInput({
+        courseTitle:course.courseTitle,
+        subTitle:course.subTitle,
+        description:course.description,
+        category:course.category,
+        courseLevel:course.courseLevel,
+        coursePrice:course.coursePrice,
+        courseThumbnail:"",
+      });
+    }
+  },[course])
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
-  const { courseId } = useParams();
+ 
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
 
