@@ -25,7 +25,10 @@ import {
 
 import { Loader2 } from "lucide-react";
 import "react-quill/dist/quill.snow.css";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/features/api/courseApi";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from "@/features/api/courseApi";
 
 const CourseTab = () => {
   const [input, setInput] = useState({
@@ -39,24 +42,27 @@ const CourseTab = () => {
   });
   const params = useParams();
   const courseId = params.courseId;
-  const{data:courseByIdData,isLoading:courseByIdLoading}= useGetCourseByIdQuery(courseId);
-  const course = courseByIdData?.course;
-  useEffect(()=>{
-    if(course){
+  const { data: courseByIdData, isLoading: courseByIdLoading } =
+    useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
+
+
+  useEffect(() => {
+    if (courseByIdData?.course) {
+      const course = courseByIdData.course;
       setInput({
-        courseTitle:course.courseTitle,
-        subTitle:course.subTitle,
-        description:course.description,
-        category:course.category,
-        courseLevel:course.courseLevel,
-        coursePrice:course.coursePrice,
-        courseThumbnail:"",
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+        courseThumbnail: "",
       });
     }
-  },[course])
+  }, [course]);
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
- 
+
   const [editCourse, { data, isLoading, isSuccess, error }] =
     useEditCourseMutation();
 
@@ -102,7 +108,10 @@ const CourseTab = () => {
     if (isSuccess)
       toast.success(data?.message || "Course updated successfully");
     if (error) toast.error(error?.data?.message || "Failed to update course");
-  }, [isSuccess, error, data]);
+  }, [isSuccess, error]);
+if (courseByIdLoading) {
+    return <Loader2 className="w-4 h-4 animate-spin " />;
+}
 
   return (
     <Card>
