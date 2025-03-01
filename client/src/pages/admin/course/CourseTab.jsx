@@ -45,21 +45,20 @@ const CourseTab = () => {
   const { data: courseByIdData, isLoading: courseByIdLoading } =
     useGetCourseByIdQuery(courseId, { refetchOnMountOrArgChange: true });
 
-
-  useEffect(() => {
-    if (courseByIdData?.course) {
-      const course = courseByIdData.course;
-      setInput({
-        courseTitle: course.courseTitle,
-        subTitle: course.subTitle,
-        description: course.description,
-        category: course.category,
-        courseLevel: course.courseLevel,
-        coursePrice: course.coursePrice,
-        courseThumbnail: "",
-      });
-    }
-  }, [course]);
+    useEffect(() => {
+      if (courseByIdData?.course) {
+        setInput({
+          courseTitle: courseByIdData.course.courseTitle,
+          subTitle: courseByIdData.course.subTitle,
+          description: courseByIdData.course.description,
+          category: courseByIdData.course.category,
+          courseLevel: courseByIdData.course.courseLevel,
+          coursePrice: courseByIdData.course.coursePrice,
+          courseThumbnail: "",
+        });
+      }
+    }, [courseByIdData]); // ✅ Correct dependency
+    
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
 
