@@ -11,6 +11,13 @@ import Dashboard from "./pages/admin/Dashboard";
 import CourseTable from "./pages/admin/course/CourseTable";
 import AddCourse from "./pages/admin/course/AddCourse"; // Ensure AddCourse.jsx has a default export
 import EditCourse from "./pages/admin/course/EditCourse";
+import CreateLecture from "./pages/admin/lecture/CreateLectuer";
+
+
+
+
+
+
 
 const appRouter = createBrowserRouter([
   {
@@ -57,8 +64,9 @@ const appRouter = createBrowserRouter([
           },
           {
             path: "course/:courseId",
-            element: <EditCourse    />,
+            element: <EditCourse />,
           },
+  
         ],
       },
     ],
