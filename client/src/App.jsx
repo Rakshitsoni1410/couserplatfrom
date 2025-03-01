@@ -57,7 +57,7 @@ const appRouter = createBrowserRouter([
           },
           {
             path: "course/:courseId",
-            element: <EditCourse />,
+            element: <EditCourse    />,
           },
         ],
       },
