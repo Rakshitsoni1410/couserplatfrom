@@ -19,11 +19,10 @@ const courseSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  courseLevel: {
-    type: String,
-    enum: ["beginner", "medium", "advanced"],
-    default: "beginner",
-  },
+  courseLevel:{
+    type:String,
+    enum:["Beginner", "Medium", "Advance"]
+},
   coursePrice: {
     type: Number,
     required: false,
