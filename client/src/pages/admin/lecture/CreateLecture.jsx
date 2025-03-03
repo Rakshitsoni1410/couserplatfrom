@@ -29,7 +29,8 @@ const CreateLecture = () => {
       toast.error(err.data?.message || "Failed to create lecture.");
     }
   };
-  
+  const {data : lectureData} = useGetCourseLectureQuery(courseId);
+  console.log(lectureData);
 
   useEffect(() => {
     if (isSuccess && data) {
