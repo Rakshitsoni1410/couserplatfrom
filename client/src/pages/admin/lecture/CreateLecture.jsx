@@ -1,54 +1,54 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateLectureMutation } from "@/features/api/courseApi";
+import {
+  useCreateLectureMutation,
+  useGetCourseLectureQuery,
+} from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const CreateLecture = () => {
   const [lectureTitle, setLectureTitle] = useState("");
-  const params = useParams();
-  const courseId = params.courseId;
-
+  const { courseId } = useParams();
   const navigate = useNavigate();
-  const [createLecture, { isLoading, isSuccess, error, data }] = useCreateLectureMutation();
+
+  // ✅ Only one declaration of createLecture
+  const [createLecture, { isLoading: isCreating, isSuccess, error }] =
+    useCreateLectureMutation();
+
+  // ✅ Fetch lectures once
+  const {
+    data: lectureData,
+    isLoading: lectureLoading,
+    error: lectureError,
+    refetch,
+  } = useGetCourseLectureQuery(courseId);
 
   const createLectureHandler = async () => {
-    if (!lectureTitle.trim()) {
-      toast.error("Lecture title cannot be empty!");
-      return;
-    }
-  
-    try {
-      const response = await createLecture({ lectureTitle, courseId }).unwrap();
-      toast.success(response.message || "Lecture created successfully!");
-      navigate(`/admin/course/${courseId}`);
-    } catch (err) {
-      toast.error(err.data?.message || "Failed to create lecture.");
-    }
+    await createLecture({ lectureTitle, courseId });
   };
-  const {data : lectureData} = useGetCourseLectureQuery(courseId);
-  console.log(lectureData);
 
   useEffect(() => {
-    if (isSuccess && data) {
-      toast.success(data.message);
+    if (isSuccess) {
+      refetch(); // ✅ Refresh lecture list after adding a new lecture
+      toast.success("Lecture created successfully!");
     }
-    if (error?.data?.message) {
-      toast.error(error.data.message);
+    if (error) {
+      toast.error(error.data?.message || "Failed to create lecture");
     }
-  }, [isSuccess, error, data]);
+  }, [isSuccess, error, refetch]);
 
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">
         <h1 className="font-bold text-xl">
-          Let's add a course, add some basic details for your new lecture.
+          Let's add lectures, add some basic details for your new lecture
         </h1>
         <p className="text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus, laborum!
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus, laborum!
         </p>
       </div>
       <div className="space-y-4">
@@ -58,7 +58,7 @@ const CreateLecture = () => {
             type="text"
             value={lectureTitle}
             onChange={(e) => setLectureTitle(e.target.value)}
-            placeholder="Your title Name"
+            placeholder="Your Title Name"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -66,18 +66,33 @@ const CreateLecture = () => {
             variant="outline"
             onClick={() => navigate(`/admin/course/${courseId}`)}
           >
-            Back to Course
+            Back to course
           </Button>
-          <Button disabled={isLoading} onClick={createLectureHandler}>
-            {isLoading ? (
+          <Button disabled={isCreating} onClick={createLectureHandler}>
+            {isCreating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </>
             ) : (
-              "Create Lecture"
+              "Create lecture"
             )}
           </Button>
+        </div>
+        <div className="mt-10">
+          {lectureLoading ? (
+            <p>Loading lectures...</p>
+          ) : lectureError ? (
+            <p>Failed to load lectures.</p>
+          ) : lectureData?.lectures?.length === 0 ? (
+            <p>No lectures available</p>
+          ) : (
+            lectureData?.lectures?.map((lecture, index) => (
+              <div key={lecture._id} className="border p-2 rounded-md">
+                <p>{index + 1}. {lecture.lectureTitle}</p>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

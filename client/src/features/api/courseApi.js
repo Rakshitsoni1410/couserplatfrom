@@ -18,6 +18,7 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ["Refetch_Creator_Course"],
     }),
+
     getCreatorCourse: builder.query({
       query: () => ({
         url: "",
@@ -25,6 +26,7 @@ export const courseApi = createApi({
       }),
       providesTags: ["Refetch_Creator_Course"],
     }),
+
     editCourse: builder.mutation({
       query: ({ formData, courseId }) => ({
         url: `/${courseId}`,
@@ -33,34 +35,38 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ["Refetch_Creator_Course"],
     }),
+
     getCourseById: builder.query({
       query: (courseId) => ({
         url: `/${courseId}`,
         method: "GET",
       }),
     }),
-    CreateLecture: builder.mutation({
+
+    createLecture: builder.mutation({  // ✅ Fixed function name
       query: ({ lectureTitle, courseId }) => ({
-        url: `/${courseId}/lecture`, // ✅ Change "lectures" to "lecture"
+        url: `/${courseId}/lecture`, 
         method: "POST",
         body: { lectureTitle },
       }),
     }),
-    getCoureseLecture: builder.query({
-      query: ({ courseId }) => ({
-        url: `/${courseId}/lecture`, // ✅ Change "lectures" to "lecture"
+
+    getCourseLecture: builder.query({
+      query: (courseId) => ({
+        url: `/${courseId}/lecture`, 
         method: "GET",
       }),
     }),
+    
   }),
 });
 
-// ✅ Export hooks
+// ✅ Export hooks (with corrected names)
 export const {
   useCreateCourseMutation,
   useGetCreatorCourseQuery,
   useEditCourseMutation,
   useGetCourseByIdQuery,
-  useCreateLectureMutation, // ✅ Now matches API function
-  useGetCoureseLectureQuery, // ✅ Now matches API function
+  useCreateLectureMutation, 
+  useGetCourseLectureQuery, // ✅ Fixed hook name
 } = courseApi;
