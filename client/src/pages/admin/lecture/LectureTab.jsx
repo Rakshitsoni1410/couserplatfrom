@@ -12,6 +12,9 @@ import { Switch } from "@/components/ui/switch";
 import React from "react";
 
 const LectureTab = () => {
+    const [title, setTitle] = useState("");
+    const [uploadVideInfo,setUploadVideoInfo] = useState(null);
+     
   return (
     <Card>
       <CardHeader className="flex justify-between">
