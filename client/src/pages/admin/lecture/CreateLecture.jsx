@@ -9,10 +9,12 @@ import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import Lecture from "./Lecture";
 
 const CreateLecture = () => {
   const [lectureTitle, setLectureTitle] = useState("");
-  const { courseId } = useParams();
+  const params = useParams();
+  const courseId = params.courseId;
   const navigate = useNavigate();
 
   // ✅ Only one declaration of createLecture
@@ -88,9 +90,7 @@ const CreateLecture = () => {
             <p>No lectures available</p>
           ) : (
             lectureData?.lectures?.map((lecture, index) => (
-              <div key={lecture._id} className="border p-2 rounded-md">
-                <p>{index + 1}. {lecture.lectureTitle}</p>
-              </div>
+              <Lecture key={lecture._id}  lecture={lecture} courseId={courseId}  index={index}/>
             ))
           )}
         </div>
