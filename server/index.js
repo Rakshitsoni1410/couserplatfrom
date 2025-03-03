@@ -5,6 +5,7 @@ import connectDB from './database/db.js';
 import userRoute from './routes/user.route.js';
 import cors from 'cors';
 import courseRoute from './routes/course.route.js';
+import mediaRoute from './routes/media.route.js';
 dotenv.config();
 
 console.log("Connecting to Database...");
@@ -22,6 +23,7 @@ app.use(cors({
     credentials: true,
 }));
 //api 
+app.use("/api/v1/media",mediaRoute);
 app.use("/api/v1/user", userRoute); // This will handle all /api/v1/user routes
 app.use("/api/v1/course", courseRoute);
 app.listen(PORT, () => {
