@@ -5,7 +5,7 @@ const Lecture = ({ lecture, courseId, index }) => {
 
     const navigate = useNavigate();
     const goToUpdateLecture = () => {
-        navigate(`/lecture/${lecture._id}`);
+        navigate(`/admin/course/${courseId}/lecture/${lecture._id}`);
     }
 
     return (
