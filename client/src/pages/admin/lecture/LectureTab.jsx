@@ -12,13 +12,13 @@ import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { useEditLectureMutation } from "@/features/api/courseApi";
 import axios from "axios";
-import { useEffect } from "react";
-import { Loader2 } from "lucide-react";
-import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
 const MEDIA_API = "http://localhost:8008/api/v1/media";
+
 const LectureTab = () => {
   const [title, setTitle] = useState("");
   const [uploadVideInfo, setUploadVideoInfo] = useState(null);
@@ -26,9 +26,9 @@ const LectureTab = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const params = useParams();
-  const { courseId, lectureId } = params;
-  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation()
+
+  const { courseId, lectureId } = useParams();
+  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -42,40 +42,48 @@ const LectureTab = () => {
             setUploadProgress(Math.round((loaded * 100) / total));
           },
         });
+
         if (res.data.success) {
-          console.log(res);
           setUploadVideoInfo({
             videoUrl: res.data.data.url,
             publicId: res.data.data.public_id,
           });
           setBtnDisabled(false);
-          toast.success(res.data.message || "viedo upload succesfully");
+          toast.success(res.data.message || "Video uploaded successfully");
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error("Failed to upload video");
       } finally {
         setMediaProgress(false);
       }
     }
   };
+
   const editLectureHandler = async () => {
+    if (!title.trim() || !uploadVideInfo) {
+      toast.error("Title and video are required!");
+      return;
+    }
+
     await editLecture({
-      lectureTitle,
+      lectureTitle: title, // Corrected
       videoInfo: uploadVideInfo,
       courseId,
       lectureId,
-      isPreview: isFree
+      isPreviewFree: isFree,
     });
   };
+
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data.message);
-
-    } if (error) {
-      toast.error(error.data.message)
+      toast.success(data?.message || "Lecture updated successfully");
     }
-  }, [isSuccess, error])
+    if (error) {
+      toast.error(error?.data?.message || "Failed to update lecture");
+    }
+  }, [isSuccess, error]);
+
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -90,32 +98,37 @@ const LectureTab = () => {
       <CardContent>
         <div>
           <Label>Title</Label>
-          <Input type="text" placeholder="Ex: Introduction to python" />
-        </div>
-        <div className="my-5">
-          <Label>
-            video <span className="text-red-500"> *</span>
-          </Label>
           <Input
-            type="file"
-            accept="video/*"
-            onChange={fileChangeHandler}
-            placeholder="Ex: Introduction to python"
-            className="w-fit"
+            type="text"
+            placeholder="Ex: Introduction to Python"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
-        <div className="flex items-center space-x-2 my-5">
-          <Switch id="airplane-mode" />
-          <Label htmlFor="airplane-mode"> IS this video free</Label>
+
+        <div className="my-5">
+          <Label>
+            Video <span className="text-red-500">*</span>
+          </Label>
+          <Input type="file" accept="video/*" onChange={fileChangeHandler} className="w-fit" />
         </div>
+
+        <div className="flex items-center space-x-2 my-5">
+          <Switch id="airplane-mode" checked={isFree} onCheckedChange={setIsFree} />
+          <Label htmlFor="airplane-mode">Is this video free?</Label>
+        </div>
+
         {mediaProgress && (
           <div className="my-4">
             <Progress value={uploadProgress} max={100} />
             <p>{uploadProgress}% uploaded</p>
           </div>
         )}
-        <div className="mt-4 ">
-          <Button onClick={editLectureHandler}>Update Lecture</Button>
+
+        <div className="mt-4">
+          <Button onClick={editLectureHandler} disabled={btnDisabled || isLoading}>
+            {isLoading ? <Loader2 className="animate-spin" /> : "Update Lecture"}
+          </Button>
         </div>
       </CardContent>
     </Card>
