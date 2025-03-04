@@ -71,7 +71,15 @@ export const courseApi = createApi({
         body: { lectureTitle, videoInfo, isPreviewFree },
       }),
     }),
-
+    removeLecture: builder.mutation({
+      query: ({
+        lectureId,
+      }) => ({
+        url: `/lecture/${lectureId}`,
+        method: "DELETE",
+      }),
+    }),
+    
   }),
 });
 
@@ -84,4 +92,5 @@ export const {
   useCreateLectureMutation, 
   useGetCourseLectureQuery, // ✅ Fixed hook name
   useEditLectureMutation,
+  useRemoveLectureMutation,
 } = courseApi;

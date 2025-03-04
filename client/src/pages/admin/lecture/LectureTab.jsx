@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { useEditLectureMutation } from "@/features/api/courseApi";
+import { useEditLectureMutation, useRemoveLectureMutation } from "@/features/api/courseApi";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,7 +29,7 @@ const LectureTab = () => {
 
   const { courseId, lectureId } = useParams();
   const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
-
+  const [removeLecture,{data:removeData,isLoading:removeLoading,isSuccess:removeSuccess}]=useRemoveLectureMutation();
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -74,6 +74,9 @@ const LectureTab = () => {
       isPreviewFree: isFree,
     });
   };
+  const removeLectureHandler = async () => {
+    await removeLecture(lectureId);
+  }
 
   useEffect(() => {
     if (isSuccess) {
@@ -83,7 +86,12 @@ const LectureTab = () => {
       toast.error(error?.data?.message || "Failed to update lecture");
     }
   }, [isSuccess, error]);
-
+  useEffect(() => {
+    if (removeSuccess) {
+      toast.success(removeData?.message || "Lecture removed successfully");
+    }
+  }, [removeSuccess, removeData]);
+    
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -92,7 +100,7 @@ const LectureTab = () => {
           <CardDescription>Make changes to the lecture details</CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="destructive">Remove lecture</Button>
+          <Button variant="destructive"onClick={removeLectureHandler}>Remove lecture</Button>
         </div>
       </CardHeader>
       <CardContent>
