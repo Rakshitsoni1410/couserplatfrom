@@ -10,10 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { useEditLectureMutation } from "@/features/api/courseApi";
 import axios from "axios";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 const MEDIA_API = "http://localhost:8008/api/v1/media";
 const LectureTab = () => {
@@ -23,6 +26,9 @@ const LectureTab = () => {
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisabled, setBtnDisabled] = useState(true);
+  const params = useParams();
+  const{ courseId,lectureId } = params;
+  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation()
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -43,7 +49,7 @@ const LectureTab = () => {
             publicId: res.data.data.public_id,
           });
           setBtnDisabled(false);
-          toast.success(res.data.message||"viedo upload succesfully");
+          toast.success(res.data.message || "viedo upload succesfully");
         }
       } catch (error) {
         console.log(error);
@@ -53,6 +59,17 @@ const LectureTab = () => {
       }
     }
   };
+  const editLectureHandler = async () => {
+    await editLecture({ lectureTitle , uploadVideInfo, courseId, lectureId,isFree });
+  };
+  useEffect(() => {
+    if(isSuccess){
+    toast.success(data.message);
+
+ }if(error){
+    toast.error(error.data.message)
+ } 
+},[isSuccess, error])
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -92,7 +109,7 @@ const LectureTab = () => {
           </div>
         )}
         <div className="mt-4 ">
-          <Button>Update Lecture</Button>
+          <Button onClick={editLectureHandler}>Update Lecture</Button>
         </div>
       </CardContent>
     </Card>

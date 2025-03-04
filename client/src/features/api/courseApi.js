@@ -56,8 +56,22 @@ export const courseApi = createApi({
         url: `/${courseId}/lecture`, 
         method: "GET",
       }),
+      providesTags: ["Refetch_Lecture"],
     }),
-    
+    editLecture: builder.mutation({
+      query: ({
+        lectureTitle,
+        videoInfo,
+        isPreviewFree,
+        courseId,
+        lectureId,
+      }) => ({
+        url: `/${courseId}/lecture/${lectureId}`,
+        method: "POST",
+        body: { lectureTitle, videoInfo, isPreviewFree },
+      }),
+    }),
+
   }),
 });
 
@@ -69,4 +83,5 @@ export const {
   useGetCourseByIdQuery,
   useCreateLectureMutation, 
   useGetCourseLectureQuery, // ✅ Fixed hook name
+  useEditLectureMutation,
 } = courseApi;
