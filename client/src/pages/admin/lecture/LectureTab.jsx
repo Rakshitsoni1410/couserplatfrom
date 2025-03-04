@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import axios from "axios";
 import React from "react";
@@ -44,6 +45,9 @@ const LectureTab = () => {
             console.log(error);
             toast.error("Failed to upload video");
           }
+          finally{
+            setMediaProgress(false);
+          }
         }
     }
   return (
@@ -69,6 +73,7 @@ const LectureTab = () => {
           <Input
             type="file"
             accept="video/*"
+            onChange={fileChangeHandler}
             placeholder="Ex: Introduction to python"
             className="w-fit"
           />
@@ -77,6 +82,16 @@ const LectureTab = () => {
           <Switch id="airplane-mode" />
           <Label htmlFor="airplane-mode"> IS this video free</Label>
         </div>
+        {
+          mediaProgress && (
+            <div className="my-4">
+              <Progress value={uploadProgress} max={100} />
+              <p>
+                {uploadProgress}% uploaded
+                </p>
+            </div>
+          )
+        }
         <div className="mt-4 ">
           <Button>Update Lecture</Button>
         </div>
