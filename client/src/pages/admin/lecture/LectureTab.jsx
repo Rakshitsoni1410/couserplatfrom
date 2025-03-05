@@ -28,8 +28,10 @@ const LectureTab = () => {
   const [btnDisabled, setBtnDisabled] = useState(true);
 
   const { courseId, lectureId } = useParams();
+
   const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
-  const [removeLecture,{data:removeData,isLoading:removeLoading,isSuccess:removeSuccess}]=useRemoveLectureMutation();
+  const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
+
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -67,16 +69,22 @@ const LectureTab = () => {
     }
 
     await editLecture({
-      lectureTitle: title, // Corrected
+      lectureTitle: title,
       videoInfo: uploadVideInfo,
       courseId,
       lectureId,
       isPreviewFree: isFree,
     });
   };
+
   const removeLectureHandler = async () => {
-    await removeLecture(lectureId);
-  }
+    if (!lectureId) {
+      toast.error("Lecture ID is missing");
+      return;
+    }
+
+    await removeLecture({ courseId, lectureId });
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -86,12 +94,13 @@ const LectureTab = () => {
       toast.error(error?.data?.message || "Failed to update lecture");
     }
   }, [isSuccess, error]);
+
   useEffect(() => {
     if (removeSuccess) {
       toast.success(removeData?.message || "Lecture removed successfully");
     }
   }, [removeSuccess, removeData]);
-    
+
   return (
     <Card>
       <CardHeader className="flex justify-between">
@@ -100,7 +109,13 @@ const LectureTab = () => {
           <CardDescription>Make changes to the lecture details</CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="destructive"onClick={removeLectureHandler}>Remove lecture</Button>
+          <Button
+            variant="destructive"
+            onClick={removeLectureHandler}
+            disabled={!lectureId || removeLoading} // Prevent removal if lectureId is missing
+          >
+            {removeLoading ? <Loader2 className="animate-spin" /> : "Remove lecture"}
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
