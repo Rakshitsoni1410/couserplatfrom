@@ -10,7 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { useEditLectureMutation, useRemoveLectureMutation } from "@/features/api/courseApi";
+import {
+  useEditLectureMutation,
+  useRemoveLectureMutation,
+} from "@/features/api/courseApi";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,8 +32,12 @@ const LectureTab = () => {
 
   const { courseId, lectureId } = useParams();
 
-  const [editLecture, { data, isLoading, error, isSuccess }] = useEditLectureMutation();
-  const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
+  const [editLecture, { data, isLoading, error, isSuccess }] =
+    useEditLectureMutation();
+  const [
+    removeLecture,
+    { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess },
+  ] = useRemoveLectureMutation();
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -114,7 +121,11 @@ const LectureTab = () => {
             onClick={removeLectureHandler}
             disabled={!lectureId || removeLoading} // Prevent removal if lectureId is missing
           >
-            {removeLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Remove lecture"}
+            {removeLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Remove lecture"
+            )}
           </Button>
         </div>
       </CardHeader>
@@ -133,11 +144,20 @@ const LectureTab = () => {
           <Label>
             Video <span className="text-red-500">*</span>
           </Label>
-          <Input type="file" accept="video/*" onChange={fileChangeHandler} className="w-fit" />
+          <Input
+            type="file"
+            accept="video/*"
+            onChange={fileChangeHandler}
+            className="w-fit"
+          />
         </div>
 
         <div className="flex items-center space-x-2 my-5">
-          <Switch id="airplane-mode" checked={isFree} onCheckedChange={setIsFree} />
+          <Switch
+            id="airplane-mode"
+            checked={isFree}
+            onCheckedChange={setIsFree}
+          />
           <Label htmlFor="airplane-mode">Is this video free?</Label>
         </div>
 
@@ -149,8 +169,15 @@ const LectureTab = () => {
         )}
 
         <div className="mt-4">
-          <Button onClick={editLectureHandler} disabled={btnDisabled || isLoading}>
-            {isLoading ? <Loader2 className="animate-spin" /> : "Update Lecture"}
+          <Button
+            onClick={editLectureHandler}
+            disabled={btnDisabled || isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Update Lecture"
+            )}
           </Button>
         </div>
       </CardContent>
