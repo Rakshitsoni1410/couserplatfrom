@@ -4,7 +4,7 @@ const COURSE_API = "http://localhost:8008/api/v1/course";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
-  tagTypes: ["Refetch_Creator_Course"],
+  tagTypes: ["Refetch_Creator_Course","Refetch_Lecture"], // ✅ Fixed tag name
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
@@ -78,8 +78,8 @@ export const courseApi = createApi({
         url: `/lecture/${lectureId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Refetch_Lecture"]
     }),
-    
   }),
 });
 
