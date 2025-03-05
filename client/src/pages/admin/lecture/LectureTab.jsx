@@ -25,7 +25,7 @@ const MEDIA_API = "http://localhost:8008/api/v1/media";
 
 const LectureTab = () => {
   const [title, setTitle] = useState("");
-  const [uploadVideoInfo, setUploadVideoInfo] = useState(null);
+  const [uploadVideInfo, setUploadVideoInfo] = useState(null);
   const [isFree, setIsFree] = useState(false);
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -33,15 +33,12 @@ const LectureTab = () => {
   const { courseId, lectureId } = useParams();
 
   const { data: lectureData } = useGetLectureByIdQuery(lectureId);
-
   useEffect(() => {
     if (lectureData) {  
       setTitle(lectureData.lectureTitle);
       setIsFree(lectureData.isPreviewFree);
-      setUploadVideoInfo(lectureData.videoInfo);
-    }
-  }, [lectureData]); // ✅ Fixed dependency
-
+      setUploadVideoInfo(lectureData.videoInfo);}
+    },[lectureData])
   const [editLecture, { data, isLoading, error, isSuccess }] =
     useEditLectureMutation();
   const [
@@ -80,14 +77,14 @@ const LectureTab = () => {
   };
 
   const editLectureHandler = async () => {
-    if (!title.trim() || !uploadVideoInfo) {
+    if (!title.trim() || !uploadVideInfo) {
       toast.error("Title and video are required!");
       return;
     }
 
     await editLecture({
       lectureTitle: title,
-      videoInfo: uploadVideoInfo, // ✅ Fixed spelling
+      videoInfo: uploadVideInfo,
       courseId,
       lectureId,
       isPreviewFree: isFree,
