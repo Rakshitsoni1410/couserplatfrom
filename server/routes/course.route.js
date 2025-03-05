@@ -12,8 +12,7 @@ router.route("/:courseId").get(isAuthenticated, getCourseById);
 router.route("/:courseId/lecture").post(isAuthenticated, createCourseLecture); // ✅ Add this route
 router.route("/:courseId/lecture").get(isAuthenticated,getCourseLecture); // ✅ Add this route
 router.route("/:courseId/lecture/:lectureId").post(isAuthenticated,editLecture); // ✅ Add this route
-//router.route("/lecture/:lectureId").delete(isAuthenticated,removeLecture); // ✅ Add this route
-router.delete("/course/:courseId/lecture/:lectureId").delete(isAuthenticated, removeLecture);
+router.route("/course/:courseId/lecture/:lectureId").delete(isAuthenticated, removeLecture);
 router.route("/lecture/:lectureId").get(isAuthenticated,getLectureById); // ✅ Add this route
 
 
