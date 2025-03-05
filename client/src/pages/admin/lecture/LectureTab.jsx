@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   useEditLectureMutation,
   useRemoveLectureMutation,
+  useGetLectureByIdQuery,
 } from "@/features/api/courseApi";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -24,13 +25,22 @@ const MEDIA_API = "http://localhost:8008/api/v1/media";
 
 const LectureTab = () => {
   const [title, setTitle] = useState("");
-  const [uploadVideInfo, setUploadVideoInfo] = useState(null);
+  const [uploadVideoInfo, setUploadVideoInfo] = useState(null);
   const [isFree, setIsFree] = useState(false);
   const [mediaProgress, setMediaProgress] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [btnDisabled, setBtnDisabled] = useState(true);
-
   const { courseId, lectureId } = useParams();
+
+  const { data: lectureData } = useGetLectureByIdQuery(lectureId);
+
+  useEffect(() => {
+    if (lectureData) {  
+      setTitle(lectureData.lectureTitle);
+      setIsFree(lectureData.isPreviewFree);
+      setUploadVideoInfo(lectureData.videoInfo);
+    }
+  }, [lectureData]); // ✅ Fixed dependency
 
   const [editLecture, { data, isLoading, error, isSuccess }] =
     useEditLectureMutation();
@@ -70,14 +80,14 @@ const LectureTab = () => {
   };
 
   const editLectureHandler = async () => {
-    if (!title.trim() || !uploadVideInfo) {
+    if (!title.trim() || !uploadVideoInfo) {
       toast.error("Title and video are required!");
       return;
     }
 
     await editLecture({
       lectureTitle: title,
-      videoInfo: uploadVideInfo,
+      videoInfo: uploadVideoInfo, // ✅ Fixed spelling
       courseId,
       lectureId,
       isPreviewFree: isFree,
