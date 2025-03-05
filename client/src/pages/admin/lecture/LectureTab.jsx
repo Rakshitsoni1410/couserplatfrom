@@ -114,7 +114,7 @@ const LectureTab = () => {
             onClick={removeLectureHandler}
             disabled={!lectureId || removeLoading} // Prevent removal if lectureId is missing
           >
-            {removeLoading ? <Loader2 className="animate-spin" /> : "Remove lecture"}
+            {removeLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Remove lecture"}
           </Button>
         </div>
       </CardHeader>
