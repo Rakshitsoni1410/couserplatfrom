@@ -14,7 +14,8 @@ router.route("/:courseId/lecture").get(isAuthenticated,getCourseLecture); // ✅
 router.route("/:courseId/lecture/:lectureId").post(isAuthenticated,editLecture); // ✅ Add this route
 router.route("/lecture/:lectureId").delete(isAuthenticated, removeLecture);//delete lec
 router.route("/lecture/:lectureId").get(isAuthenticated,getLectureById); // ✅ Add this route
-router.route("/:courseId").put(isAuthenticated,togglePublishCourse);
+router.route("/:courseId").patch(isAuthenticated, togglePublishCourse);
+
 
 
 
