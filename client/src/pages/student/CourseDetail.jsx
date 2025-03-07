@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import BuyCourseButton from "@/components/ui/BuyCourseButton";
 import {
   Card,
   CardContent,
@@ -70,7 +71,7 @@ const CourseDetail = () => {
                 purchasedCourse ? (
                   <Button className="w-full">continue Course</Button>
                 ) : (
-                  <Button className="w-full">Purchase Course</Button>
+                  <BuyCourseButton/>
                 )
               }
 
