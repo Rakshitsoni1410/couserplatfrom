@@ -25,19 +25,19 @@ export const createCourse = async (req, res) => {
     res.status(500).json({ message: "Failed to create course" });
   }
 };
-
-export const getPublishedCourse = async (_, res) => {
+//publish
+export const getPublishedCourse = async (req, res) => {
   try {
-    const courses = await Course.find({ isPublished: true }).populate({path:"creator",select :"name photourl" });
-    if (!courses) {
+    const courses = await Course.find({ isPublished: true })
+      .populate({ path: "creator", select: "name photourl" });
+
+    if (courses.length === 0) {
       return res.status(404).json({ message: "No courses found" });
     }
-    return res.status (200).json({
-      
-    })
+
+    return res.status(200).json({ courses });
   } catch (error) {
-    console.error("Error creating course:", error);
-    res.status(500).json({ message: "Failed to get published course" });
+    res.status(500).json({ message: "Failed to get published courses" });
   }
 };
 export const getCreatorCourses = async (req, res) => {

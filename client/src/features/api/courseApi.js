@@ -4,7 +4,7 @@ const COURSE_API = "http://localhost:8008/api/v1/course";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
-  tagTypes: ["Refetch_Creator_Course","Refetch_Lecture"], // ✅ Fixed tag name
+  tagTypes: ["Refetch_Creator_Course", "Refetch_Lecture"], // ✅ Fixed tag name
   baseQuery: fetchBaseQuery({
     baseUrl: COURSE_API,
     credentials: "include",
@@ -18,7 +18,12 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ["Refetch_Creator_Course"],
     }),
-
+      getPublishedCourse: builder.query({
+      query: () => ({
+        url: "/published-courses",
+        method: "GET",
+      }),
+    }),
     getCreatorCourse: builder.query({
       query: () => ({
         url: "",
@@ -43,9 +48,10 @@ export const courseApi = createApi({
       }),
     }),
 
-    createLecture: builder.mutation({  // ✅ Fixed function name
+    createLecture: builder.mutation({
+      // ✅ Fixed function name
       query: ({ lectureTitle, courseId }) => ({
-        url: `/${courseId}/lecture`, 
+        url: `/${courseId}/lecture`,
         method: "POST",
         body: { lectureTitle },
       }),
@@ -53,7 +59,7 @@ export const courseApi = createApi({
 
     getCourseLecture: builder.query({
       query: (courseId) => ({
-        url: `/${courseId}/lecture`, 
+        url: `/${courseId}/lecture`,
         method: "GET",
       }),
       providesTags: ["Refetch_Lecture"],
@@ -72,13 +78,11 @@ export const courseApi = createApi({
       }),
     }),
     removeLecture: builder.mutation({
-      query: ({
-        lectureId,
-      }) => ({
+      query: ({ lectureId }) => ({
         url: `/lecture/${lectureId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Refetch_Lecture"]
+      invalidatesTags: ["Refetch_Lecture"],
     }),
     getLectureById: builder.query({
       query: (lectureId) => ({
@@ -98,10 +102,11 @@ export const courseApi = createApi({
 // ✅ Export hooks (with corrected names)
 export const {
   useCreateCourseMutation,
+  useGetPublishedCourseQuery,
   useGetCreatorCourseQuery,
   useEditCourseMutation,
   useGetCourseByIdQuery,
-  useCreateLectureMutation, 
+  useCreateLectureMutation,
   useGetCourseLectureQuery, // ✅ Fixed hook name
   useEditLectureMutation,
   useRemoveLectureMutation,
