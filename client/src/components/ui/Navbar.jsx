@@ -52,7 +52,9 @@ const Navbar = () => {
       {/* Left Section (Logo & Name) - Only for Desktop */}
       <div className="hidden md:flex items-center gap-2">
         <School size={30} />
-        <h1 className="font-extrabold text-2xl">E-Learning</h1>
+        <Link to="/">
+          <h1 className="font-extrabold text-2xl">E-Learning</h1>
+        </Link>
       </div>
 
       {/* Desktop View */}
@@ -87,7 +89,9 @@ const Navbar = () => {
                 {user.role === "instructor" && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/admin">Dashboard</Link>
+                    </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuContent>
