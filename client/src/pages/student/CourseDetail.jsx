@@ -12,7 +12,7 @@ import { BadgeInfo, PlayCircle } from "lucide-react";
 import React from "react";
 
 const CourseDetail = () => {
-  const purchasedCourse = true;
+  const purchasedCourse = false;
   return (
     <div className="mt-24 space-y-5 ">
       <div className="bg-[#2D2F31] text-white">
@@ -65,12 +65,12 @@ const CourseDetail = () => {
               <Separator className="my-2 " />
               <h1 className="text-lg md:text-xl font-semibold">Course price</h1>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-center p-4">
               {
                 purchasedCourse ? (
-                  <Button>continue Course</Button>
+                  <Button className="w-full">continue Course</Button>
                 ) : (
-                  <Button>Purchase Course</Button>
+                  <Button className="w-full">Purchase Course</Button>
                 )
               }
 
