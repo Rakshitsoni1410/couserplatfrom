@@ -3,7 +3,7 @@ import Course from "./Course";
 
 const MyLearning = () => {
   const isLoading = false; // Change to true to display loading state
-  const myLearningCourses = [1, 2]; // This should contain course data
+  const myLearningCourses = []; // This should contain course data
 
   return (
     <div className="max-w-4xl mx-auto my-24 px-4 md:px-0">
