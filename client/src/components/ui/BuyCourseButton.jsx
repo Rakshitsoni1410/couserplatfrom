@@ -1,14 +1,18 @@
-import React from 'react'
-import { Button } from './button'
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
-const BuyCourseButton = () => {
+const BuyCourseButton = ({ courseId }) => {
+  const navigate = useNavigate();
+
+  const handleBuy = () => {
+    navigate(`/payment/${courseId}`);
+  };
+
   return (
-    
-        <Button className="w-full">
-            Purchse course 
-        </Button>
-    
-  )
-}
+    <Button className="w-full" onClick={handleBuy}>
+      Buy Course
+    </Button>
+  );
+};
 
-export default BuyCourseButton
+export default BuyCourseButton;

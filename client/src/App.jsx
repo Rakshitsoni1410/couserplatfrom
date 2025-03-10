@@ -9,17 +9,20 @@ import Profile from "./pages/student/Profile";
 import Sidebar from "./pages/admin/lecture/Sidebar";
 import Dashboard from "./pages/admin/Dashboard";
 import CourseTable from "./pages/admin/course/CourseTable";
-import AddCourse from "./pages/admin/course/AddCourse"; // Ensure AddCourse.jsx has a default export
+import AddCourse from "./pages/admin/course/AddCourse";
 import EditCourse from "./pages/admin/course/EditCourse";
 import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
+import PaymentPage from "./components/ui/PaymentPage";
+
 
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    //errorElement: <ErrorPage />, // Handles route errors
     children: [
       {
         index: true,
@@ -43,8 +46,12 @@ const appRouter = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path:"course-detail/:couseId",
-        element:<CourseDetail />
+        path: "course-detail/:courseId",
+        element: <CourseDetail />,
+      },
+      {
+        path: "payment/:courseId", // Payment page route
+        element: <PaymentPage/>,
       },
       // Admin Routes
       {
@@ -73,12 +80,13 @@ const appRouter = createBrowserRouter([
           },
           {
             path: "course/:courseId/lecture/:lectureId",
-            element: <EditLecture/>,
-          }
+            element: <EditLecture />,
+          },
         ],
       },
     ],
   },
+  
 ]);
 
 function App() {
