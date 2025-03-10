@@ -108,7 +108,7 @@ export const stripeWebhook = async (req, res) => {
       purchase.status = "completed";
 
       // Make all lectures visible by setting `isPreviewFree` to true
-      if (purchase.courseId && purchase.courseId.lectures.length > 0) {
+      if (purchase.course_id && purchase.course_id.lectures.length > 0) {
         await Lecture.updateMany(
           { _id: { $in: purchase.courseId.lectures } },
           { $set: { isPreviewFree: true } }
