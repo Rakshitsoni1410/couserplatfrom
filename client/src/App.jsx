@@ -18,6 +18,7 @@ import PaymentPage from "./components/ui/PaymentPage";
 
 
 
+
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -51,7 +52,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "payment/:courseId", // Payment page route
-        element: <PaymentPage/>,
+        element: <PaymentPage/>
       },
       // Admin Routes
       {

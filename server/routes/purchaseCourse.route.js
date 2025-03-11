@@ -1,24 +1,23 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import { 
-    createCheckoutSession, 
-    fakePaymentWebhook, 
-    getCourseDetailWithPurchaseStatus, 
-    getAllPurchasedCourses 
+  getAllPurchasedCourses, 
+  getCourseDetailWithPurchaseStatus, 
+  storePayment 
 } from "../controllers/coursePurchase.controller.js";
 
 const router = express.Router();
 
-// Fake Payment Checkout
-router.route("/checkout/create-checkout-session").post(isAuthenticated, createCheckoutSession);
+// ✅ Store Payment in Database
+router.post("/store", isAuthenticated, storePayment);
 
-// Fake Webhook (Simulating Payment Confirmation)
-router.route("/webhook").post(fakePaymentWebhook);
+// ✅ Get Course Details with Purchase Status
+router.get("/course/:courseId", isAuthenticated, getCourseDetailWithPurchaseStatus);
 
-// Get Course Details with Purchase Status
-router.route("/course/:courseId").get(isAuthenticated, getCourseDetailWithPurchaseStatus);
+// ✅ Get All Purchased Courses
+router.get("/all", isAuthenticated, getAllPurchasedCourses);
 
-// Get All Purchased Courses
-router.route("/all").get(isAuthenticated, getAllPurchasedCourses);
+// ❌ Remove this if it's redundant, otherwise clarify its purpose
+router.post("/checkout/create-payment-session", isAuthenticated, storePayment);
 
 export default router;

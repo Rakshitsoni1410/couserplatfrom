@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi"; // Import API hook
 
 const PaymentPage = () => {
-  const { courseId } = useParams();
   const navigate = useNavigate();
+ const params = useParams();
+ const {courseId} = params.courseId;  
+  console.log("🔍 Debug - Course ID from useParams:", courseId); // Debugging
+
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [upiId, setUpiId] = useState("");
   const [cardDetails, setCardDetails] = useState({
@@ -14,20 +18,47 @@ const PaymentPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Dummy course details (replace with API call if needed)
-  const course = {
-    title: "React Fundamentals",
-    creator: "Rakshit",
-    price: 999,
-    description:
-      "Learn the basics of React.js with hands-on projects and real-world examples.",
-    image: "https://source.unsplash.com/400x300/?coding,react",
-  };
+  // ✅ Prevent API call if courseId is missing or invalid
+  useEffect(() => {
+    if (!courseId) {
+      console.error("⚠️ Error: Course ID is missing in the URL.");
+    }
+  }, [courseId]);
 
-  const handlePayment = () => {
+  if (!courseId) {
+    return <h1 className="text-center text-red-500 font-bold mt-10">Error: Course ID is missing in the URL!</h1>;
+  }
+
+  // ✅ Fetch course details
+  const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId);
+
+console.log("🔍 Debug - API Call:", `/api/course/${courseId}`);
+
+
+  if (isLoading) return <h1>Loading course details...</h1>;
+  if (isError || !data?.course) return <h1>Failed to load course details. Please try again later.</h1>;
+
+  const { course } = data;
+
+  const handlePayment = async () => {
     setLoading(true);
+
+    // ✅ Payment Data
+    const paymentData = {
+      courseId,
+      courseTitle: course.courseTitle,
+      creator: course.creator.name,
+      price: course.coursePrice,
+      paymentMethod,
+      upiId: paymentMethod === "upi" ? upiId : null,
+      cardDetails: paymentMethod === "card" ? cardDetails : null,
+    };
+
+    console.log("✅ Processing Payment:", paymentData);
+
+    // Simulating API call
     setTimeout(() => {
-      alert("Payment Successful ✅");
+      alert("✅ Payment Successful!");
       navigate(`/course-progress/${courseId}`);
     }, 2000);
   };
@@ -36,18 +67,16 @@ const PaymentPage = () => {
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-100 p-6 space-y-6 lg:space-y-0 lg:space-x-10">
       {/* Left Side - Course Details */}
       <div className="bg-white shadow-md rounded-lg p-6 w-full lg:w-1/3 space-y-4">
-        <img src={course.image} alt="Course" className="w-full rounded-lg" />
-        <h2 className="text-2xl font-semibold">{course.title}</h2>
-        <p className="text-gray-600">By {course.creator}</p>
-        <p className="text-lg font-bold">Price: ₹{course.price}</p>
+        <img src={course.thumbnailUrl} alt="Course" className="w-full rounded-lg" />
+        <h2 className="text-2xl font-semibold">{course.courseTitle}</h2>
+        <p className="text-gray-600">By {course.creator.name}</p>
+        <p className="text-lg font-bold">Price: ₹{course.coursePrice}</p>
         <p className="text-sm text-gray-500">{course.description}</p>
       </div>
 
       {/* Right Side - Payment Form */}
       <div className="bg-white shadow-md rounded-lg p-6 w-full lg:w-1/3 space-y-4">
-        <h2 className="text-2xl font-semibold text-center">
-          Payment for Course {courseId}
-        </h2>
+        <h2 className="text-2xl font-semibold text-center">Payment for {course.courseTitle}</h2>
 
         {/* Payment Method Selection */}
         <label className="block font-semibold">Select Payment Method:</label>
@@ -63,26 +92,6 @@ const PaymentPage = () => {
         {/* Card Payment Section */}
         {paymentMethod === "card" && (
           <div className="mt-3 space-y-3">
-            {/* Payment Icons */}
-            <div className="flex justify-center space-x-3">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
-                alt="Visa"
-                className="h-8"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg"
-                alt="MasterCard"
-                className="h-8"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/1/10/Rupay-Logo.png"
-                alt="RuPay"
-                className="h-8"
-              />
-            </div>
-
-            {/* Card Input Fields */}
             <input
               type="text"
               placeholder="Card Number"
@@ -121,25 +130,6 @@ const PaymentPage = () => {
         {/* UPI Payment Section */}
         {paymentMethod === "upi" && (
           <div className="mt-3 space-y-3">
-            {/* UPI Icons */}
-            <div className="flex justify-center space-x-3">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Google_Pay_Logo.svg"
-                alt="Google Pay"
-                className="h-8"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/1/16/PhonePe_Logo.svg"
-                alt="PhonePe"
-                className="h-8"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Paytm_logo_new.svg"
-                alt="Paytm"
-                className="h-8"
-              />
-            </div>
-
             <input
               type="text"
               placeholder="Enter UPI ID"
