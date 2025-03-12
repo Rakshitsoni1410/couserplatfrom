@@ -12,7 +12,7 @@ const Course = ({course}) => {
         <img
           src={course.courseThumbnail}
           alt="course"
-          className="w-full h-36 object-cover rounded-t-lg"
+          className="w-full h-50 object-cover rounded-t-lg"
         />
       </div>
       <CardContent className="px-5 py-4 space-y-3">
