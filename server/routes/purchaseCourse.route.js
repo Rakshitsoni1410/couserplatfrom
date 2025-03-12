@@ -9,15 +9,12 @@ import {
 const router = express.Router();
 
 // ✅ Store Payment in Database
-router.post("/store", isAuthenticated, storePayment);
+router.post("/store-payment", isAuthenticated, storePayment);
 
 // ✅ Get Course Details with Purchase Status
 router.get("/course/:courseId", isAuthenticated, getCourseDetailWithPurchaseStatus);
 
 // ✅ Get All Purchased Courses
-router.get("/all", isAuthenticated, getAllPurchasedCourses);
-
-// ❌ Remove this if it's redundant, otherwise clarify its purpose
-router.post("/checkout/create-payment-session", isAuthenticated, storePayment);
+router.get("/purchased-courses", isAuthenticated, getAllPurchasedCourses);
 
 export default router;

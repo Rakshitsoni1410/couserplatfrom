@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const COURSE_PURCHASE_API = "http://localhost:8008/api/v1"; // ✅ Correct base URL
+const COURSE_PURCHASE_API = "http://localhost:8008/api/v1";
 
 export const purchaseApi = createApi({
   reducerPath: "purchaseApi",
@@ -9,47 +9,47 @@ export const purchaseApi = createApi({
     credentials: "include",
   }),
   endpoints: (builder) => ({
-    createPaymentSession: builder.mutation({
+    // ✅ Store Payment
+    storePayment: builder.mutation({
       query: ({ courseId, paymentMethod, upiId, cardNumber }) => {
-        if (!courseId) throw new Error("🚨 Error: courseId is required for payment!");
+        if (!courseId) {
+          console.error("🚨 Error: courseId is required for payment!");
+          return null;
+        }
 
         const body = { courseId, paymentMethod };
         if (paymentMethod === "upi") body.upiId = upiId;
         if (paymentMethod === "card") body.cardNumber = cardNumber;
 
         return {
-          url: "/checkout/create-payment-session", // ✅ Corrected path
+          url: "/store-payment", // ✅ Fixed route
           method: "POST",
           body,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         };
       },
     }),
+
+    // ✅ Get Course Details
     getCourseDetailWithStatus: builder.query({
       query: (courseId) => {
         if (!courseId) {
           console.error("🚨 Error: courseId is missing in API call!");
-          return { url: "" }; // Prevents invalid requests
+          return null;
         }
-        return {
-          url: `/course/${courseId}`, // ✅ Correct URL
-          method: "GET",
-        };
+        return { url: `/course/${courseId}`, method: "GET" };
       },
     }),
+
+    // ✅ Get Purchased Courses
     getPurchasedCourses: builder.query({
-      query: () => ({
-        url: `/all`, // ✅ Corrected path
-        method: "GET",
-      }),
+      query: () => ({ url: `/purchased-courses`, method: "GET" }),
     }),
   }),
 });
 
 export const {
-  useCreatePaymentSessionMutation,
+  useStorePaymentMutation,
   useGetCourseDetailWithStatusQuery,
   useGetPurchasedCoursesQuery,
 } = purchaseApi;

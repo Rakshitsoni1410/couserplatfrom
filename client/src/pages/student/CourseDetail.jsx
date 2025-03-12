@@ -21,12 +21,14 @@ const CourseDetail = () => {
   const navigate = useNavigate();
 
   // Fetch course details with purchase status
-  const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId);
-  console.log("Course ID:", courseId);
+  const { data, isLoading, isError } =
+    useGetCourseDetailWithStatusQuery(courseId);
   
+  console.log("API Response:", data); // ✅ Debugging API Response
+
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course details</h1>;
-  if (!data) return <h1>No data available</h1>; // ADDED CHECK
+  if (!data || !data.course) return <h1>No data available</h1>; // Improved safety check
 
   const { course, purchased } = data;
 
@@ -35,41 +37,59 @@ const CourseDetail = () => {
   };
 
   return (
-    <div className="space-y-5 pt-20"> {/* ADDED pt-20 to prevent content from hiding under navbar */}
+    <div className="space-y-5 pt-20">
       <div className="bg-[#2D2F31] text-white">
         <div className="max-w-7xl mx-auto py-8 px-4 md:px-8 flex flex-col gap-2">
-          <h1 className="font-bold text-2xl md:text-3xl">{course?.courseTitle}</h1>
-          <p className="text-base md:text-lg">Course Sub-title</p>
+          <h1 className="font-bold text-2xl md:text-3xl">
+            {course?.courseTitle || "No Title Available"}
+          </h1>
+          <p className="text-base md:text-lg">
+            {course?.subTitle || "No subtitle available"}
+          </p>
           <p>
-            Created By{"RRsoni"}
+            Created By{" "}
             <span className="text-[#C0C4FC] underline italic">
-              {course?.creator?.name}
+              {course?.creator?.name || "Unknown Instructor"}
             </span>
           </p>
           <div className="flex items-center gap-2 text-sm">
             <BadgeInfo size={16} />
-            <p>Last updated {course?.createdAt?.split("T")[0]}</p>
+            <p>Last updated {course?.createdAt?.split("T")[0] || "N/A"}</p>
           </div>
-          <p>Students enrolled: {course?.enrolledStudents?.length}</p>
+          <p>Students enrolled: {course?.enrolledStudents?.length || 0}</p>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row justify-between gap-10">
         <div className="w-full lg:w-1/2 space-y-5">
           <h1 className="font-bold text-xl md:text-2xl">Description</h1>
-          <p className="text-sm" dangerouslySetInnerHTML={{ __html: course?.description }} />
+          <p
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: course?.description || "No description available" }}
+          />
           <Card>
             <CardHeader>
               <CardTitle>Course Content</CardTitle>
-              <CardDescription>{course?.lectures?.length} lectures</CardDescription>
+              <CardDescription>
+                {course?.lectures?.length || 0} lectures
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {course?.lectures?.map((lecture, idx) => (
-                <div key={idx} className="flex items-center gap-3 text-sm">
-                  <span>{lecture?.isPreviewFree ? <PlayCircle size={14} /> : <Lock size={14} />}</span>
-                  <p>{lecture?.lectureTitle}</p>
-                </div>
-              ))}
+              {course?.lectures?.length > 0 ? (
+                course.lectures.map((lecture, idx) => (
+                  <div key={idx} className="flex items-center gap-3 text-sm">
+                    <span>
+                      {lecture?.isPreviewFree ? (
+                        <PlayCircle size={14} />
+                      ) : (
+                        <Lock size={14} />
+                      )}
+                    </span>
+                    <p>{lecture?.lectureTitle || "Untitled Lecture"}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No lectures available</p>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -77,7 +97,6 @@ const CourseDetail = () => {
           <Card>
             <CardContent className="p-4 flex flex-col">
               <div className="w-full aspect-video mb-4">
-                {/* ADDED CHECK: Ensure course.lectures exists before accessing index [0] */}
                 {course?.lectures?.length > 0 ? (
                   <ReactPlayer
                     width="100%"
@@ -86,13 +105,18 @@ const CourseDetail = () => {
                     controls={true}
                   />
                 ) : (
-                  <p className="text-center text-gray-500">No lectures available</p>
+                  <p className="text-center text-gray-500">
+                    No lectures available
+                  </p>
                 )}
               </div>
-              {/* ADDED CHECK: Show title only if lectures exist */}
-              {course?.lectures?.length > 0 && <h1>{course?.lectures[0]?.lectureTitle}</h1>}
+              {course?.lectures?.length > 0 && (
+                <h1>{course?.lectures[0]?.lectureTitle || "Untitled Lecture"}</h1>
+              )}
               <Separator className="my-2" />
-              <h1 className="text-lg md:text-xl font-semibold">{`$${course?.coursePrice}`}</h1>
+              <h1 className="text-lg md:text-xl font-semibold">
+                {course?.coursePrice ? `₹${course.coursePrice}` : "Free"}
+              </h1>
             </CardContent>
             <CardFooter className="flex justify-center p-4">
               {purchased ? (
@@ -100,7 +124,7 @@ const CourseDetail = () => {
                   Continue Course
                 </Button>
               ) : (
-                <BuyCourseButton course={course} />
+                <BuyCourseButton courseId={course?._id} />
               )}
             </CardFooter>
           </Card>

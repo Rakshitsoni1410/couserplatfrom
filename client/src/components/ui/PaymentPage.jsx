@@ -5,9 +5,7 @@ import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi"; 
 
 const PaymentPage = () => {
   const navigate = useNavigate();
- const params = useParams();
- const {courseId} = params.courseId;  
-  console.log("🔍 Debug - Course ID from useParams:", courseId); // Debugging
+  const { courseId } = useParams(); // ✅ Extracted correctly
 
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [upiId, setUpiId] = useState("");
@@ -18,22 +16,20 @@ const PaymentPage = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // ✅ Prevent API call if courseId is missing or invalid
+  // ✅ Fetch course details
+  const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId, {
+    skip: !courseId, // ✅ Prevents calling API if `courseId` is missing
+  });
+
   useEffect(() => {
     if (!courseId) {
-      console.error("⚠️ Error: Course ID is missing in the URL.");
+      console.error("🚨 Error: Course ID is missing in the URL.");
     }
   }, [courseId]);
 
   if (!courseId) {
     return <h1 className="text-center text-red-500 font-bold mt-10">Error: Course ID is missing in the URL!</h1>;
   }
-
-  // ✅ Fetch course details
-  const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId);
-
-console.log("🔍 Debug - API Call:", `/api/course/${courseId}`);
-
 
   if (isLoading) return <h1>Loading course details...</h1>;
   if (isError || !data?.course) return <h1>Failed to load course details. Please try again later.</h1>;
@@ -53,8 +49,6 @@ console.log("🔍 Debug - API Call:", `/api/course/${courseId}`);
       upiId: paymentMethod === "upi" ? upiId : null,
       cardDetails: paymentMethod === "card" ? cardDetails : null,
     };
-
-    console.log("✅ Processing Payment:", paymentData);
 
     // Simulating API call
     setTimeout(() => {
