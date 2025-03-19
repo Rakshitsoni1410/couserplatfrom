@@ -12,6 +12,6 @@ router.route("/webhook").post(express.raw({ type: "application/json" }), payment
 router.route("/course/:courseId/detail-with-status").get(getCourseDetailWithPurchaseStatus); // This route has no handler yet
 
 // General Route (Make sure to define what this should return)
-router.route("/").get(getAllPurchasedCourse); // This also has no handler yet
+router.route("/").get(isAuthenticated,getAllPurchasedCourse); // This also has no handler yet
 
 export default router;
