@@ -43,23 +43,54 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gray-100 p-10 space-y-12 lg:space-y-0 lg:space-x-14">
-      {/* Left Side - Course Details */}
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full lg:w-2/5 space-y-8 transform hover:scale-105 transition-all duration-300">
-        <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-6">
-          <div className="relative w-full md:w-1/2 h-56 md:h-64 lg:h-72 rounded-xl overflow-hidden shadow-lg">
-            <img src={course.courseThumbnail} alt="Course Thumbnail" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 ease-in-out" />
+    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-gray-100 p-10 space-y-12 lg:space-y-0 lg:space-x-14">
+
+      {/* Left Side - Course Details (Improved Design) */}
+      <div className="relative bg-white shadow-xl rounded-2xl p-8 w-full lg:w-2/5 space-y-6 transform hover:scale-105 transition-all duration-300">
+        {/* Course Thumbnail */}
+        <div className="relative flex justify-center items-center rounded-xl overflow-hidden shadow-lg bg-white p-4">
+          {/* Course Image Centered */}
+          <img
+            src={course.courseThumbnail}
+            alt="Course Thumbnail"
+            className="w-30 max-w-md h-64 object-cover rounded-lg shadow-md hover:scale-110 transition-transform duration-300 ease-in-out"
+          />
+
+          {/* Price Badge Next to Image */}
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-bold px-4 py-2 rounded-xl shadow-md">
+            ₹{course.coursePrice}
           </div>
-          <div className="w-full md:w-1/2">
-            <h2 className="text-3xl font-bold text-gray-900">{course.courseTitle}</h2>
-            <p className="text-lg text-gray-700 mt-1">By <span className="font-medium text-blue-600">{course.creator.name}</span></p>
-            <p className="text-lg text-gray-700 mt-1">Subtitle: <span className="font-medium text-blue-600">{course.subTitle}</span></p>
-            <p className="text-2xl font-bold text-green-600 mt-2">₹{course.coursePrice}</p>
-            <p className="text-md text-gray-600 leading-relaxed mt-4">{course.description.replace(/<\/?[^>]+(>|$)/g, "")}</p>
+        </div>
+
+
+        {/* Course Details */}
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-gray-900">{course.courseTitle}</h2>
+          <p className="text-lg text-gray-700">
+            By <span className="font-medium text-blue-600">{course.creator.name}</span>
+          </p>
+          <p className="text-lg text-gray-700 italic">{course.subTitle}</p>
+          <p className="text-md text-gray-600 leading-relaxed">
+            {course.description.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150)}...
+          </p>
+        </div>
+
+        {/* Course Highlights */}
+        <div className="flex justify-center space-x-6 mt-4">
+          <div className="flex flex-col items-center text-blue-600">
+            <FaCreditCard className="w-10 h-10" />
+            <span className="text-sm font-semibold mt-1">Lifetime Access</span>
+          </div>
+          <div className="flex flex-col items-center text-purple-600">
+            <FaCcMastercard className="w-10 h-10" />
+            <span className="text-sm font-semibold mt-1">Certificate</span>
+          </div>
+          <div className="flex flex-col items-center text-green-600">
+            <FaCcVisa className="w-10 h-10" />
+            <span className="text-sm font-semibold mt-1">HD Videos</span>
           </div>
         </div>
       </div>
-
       {/* Right Side - Payment Form */}
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full lg:w-2/5 space-y-8 transform hover:shadow-2xl transition-shadow duration-300">
         <h2 className="text-3xl font-semibold text-center text-gray-900">Complete Your Payment</h2>
