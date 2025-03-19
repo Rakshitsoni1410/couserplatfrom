@@ -1,20 +1,17 @@
 import express from "express";
-import isAuthenticated from "../middlewares/isAuthenticated.js";
-import { 
-  getAllPurchasedCourses, 
-  getCourseDetailWithPurchaseStatus, 
-  storePayment 
-} from "../controllers/coursePurchase.controller.js";
+import isAuthenticated from "../middlewares/isAuthenticated.js"; // Removed parentheses
+import { createCheckoutSession, getAllPurchasedCourse, getCourseDetailWithPurchaseStatus, paymentWebhook } from "../controllers/coursePurchase.controller.js";
 
 const router = express.Router();
 
-// ✅ Store Payment in Database
-router.post("/store-payment", isAuthenticated, storePayment);
+// Payment Routes
+router.route("/checkout/create-checkout-session").post(isAuthenticated, createCheckoutSession);
+router.route("/webhook").post(express.raw({ type: "application/json" }), paymentWebhook); // Added missing "/"
 
-// ✅ Get Course Details with Purchase Status
-router.get("/course/:courseId", isAuthenticated, getCourseDetailWithPurchaseStatus);
+// Course Details
+router.route("/course/:courseId/detail-with-status").get(getCourseDetailWithPurchaseStatus); // This route has no handler yet
 
-// ✅ Get All Purchased Courses
-router.get("/purchased-courses", isAuthenticated, getAllPurchasedCourses);
+// General Route (Make sure to define what this should return)
+router.route("/").get(getAllPurchasedCourse); // This also has no handler yet
 
 export default router;

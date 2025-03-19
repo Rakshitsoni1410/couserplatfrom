@@ -20,15 +20,9 @@ const CourseDetail = () => {
   const courseId = params.courseId;
   const navigate = useNavigate();
 
-  // Fetch course details with purchase status
-  const { data, isLoading, isError } =
-    useGetCourseDetailWithStatusQuery(courseId);
-  
-  console.log("API Response:", data); // ✅ Debugging API Response
-
+const {data,isLoading,isError} =useGetCourseDetailWithStatusQuery(courseId);
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course details</h1>;
-  if (!data || !data.course) return <h1>No data available</h1>; // Improved safety check
 
   const { course, purchased } = data;
 

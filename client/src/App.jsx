@@ -21,6 +21,7 @@ import EditLecture from "./pages/admin/lecture/EditLecture";
 // ✅ Student Components
 import CourseDetail from "./pages/student/CourseDetail";
 import PaymentPage from "./components/ui/PaymentPage";
+import CourseProgress from "./pages/student/CourseProgress";
 
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
@@ -57,6 +58,10 @@ const appRouter = createBrowserRouter([
       {
         path: "payment/:courseId", // ✅ Payment page for purchasing a course
         element: <PaymentPage />,
+      },
+      {
+        path: "course-progress/:courseId", // ✅ Course details page
+        element: <CourseProgress />,
       },
       // 📌 Admin Routes (Requires authentication)
       {

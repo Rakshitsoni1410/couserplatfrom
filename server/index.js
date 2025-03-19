@@ -6,6 +6,7 @@ import userRoute from './routes/user.route.js';
 import cors from 'cors';
 import courseRoute from './routes/course.route.js';
 import mediaRoute from './routes/media.route.js';
+import purchaseRoute from './routes/purchaseCourse.route.js'
 dotenv.config();
 
 console.log("Connecting to Database...");
@@ -26,6 +27,7 @@ app.use(cors({
 app.use("/api/v1/media",mediaRoute);
 app.use("/api/v1/user", userRoute); // This will handle all /api/v1/user routes
 app.use("/api/v1/course", courseRoute);
+app.use("/api/v1/purchase",purchaseRoute)
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
