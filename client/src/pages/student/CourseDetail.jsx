@@ -20,14 +20,17 @@ const CourseDetail = () => {
   const courseId = params.courseId;
   const navigate = useNavigate();
 
-const {data,isLoading,isError} =useGetCourseDetailWithStatusQuery(courseId);
+  const { data, isLoading, isError } =
+    useGetCourseDetailWithStatusQuery(courseId);
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1>Failed to load course details</h1>;
 
   const { course, purchased } = data;
 
   const handleContinueCourse = () => {
-    navigate(`/course-progress/${courseId}`);
+    if (purchased) {
+      navigate(`/course-progress/${courseId}`);
+    }
   };
 
   return (
@@ -58,7 +61,9 @@ const {data,isLoading,isError} =useGetCourseDetailWithStatusQuery(courseId);
           <h1 className="font-bold text-xl md:text-2xl">Description</h1>
           <p
             className="text-sm"
-            dangerouslySetInnerHTML={{ __html: course?.description || "No description available" }}
+            dangerouslySetInnerHTML={{
+              __html: course?.description || "No description available",
+            }}
           />
           <Card>
             <CardHeader>
@@ -105,7 +110,9 @@ const {data,isLoading,isError} =useGetCourseDetailWithStatusQuery(courseId);
                 )}
               </div>
               {course?.lectures?.length > 0 && (
-                <h1>{course?.lectures[0]?.lectureTitle || "Untitled Lecture"}</h1>
+                <h1>
+                  {course?.lectures[0]?.lectureTitle || "Untitled Lecture"}
+                </h1>
               )}
               <Separator className="my-2" />
               <h1 className="text-lg md:text-xl font-semibold">
