@@ -3,51 +3,82 @@ import { CoursePurchase } from "../models/coursePurchase.model.js";
 import { Lecture } from "../models/lecture.model.js";
 import { User } from "../models/user.model.js";
 import { webhookSignatureVerification } from "../utils/paymentWebhook.js"; 
+
 /**
  * Real Payment Processing (Transaction Pending)
  */
 export const createCheckoutSession = async (req, res) => {
   try {
-    const userId = req.id;
-    const { courseId } = req.body;
+      const { id: userId, name: userName } = req.user;  // ✅ Get user details
+      const { courseId, paymentMethod, upiId, cardNumber } = req.body;
 
-    // Find the course
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return res.status(404).json({
-        success: false,
-        message: "Course not found!",
-        redirectUrl: `http://localhost:5173/course-detail/${courseId}`,
+      // Find the course
+      const course = await Course.findById(courseId);
+      if (!course) {
+          return res.status(404).json({
+              success: false,
+              message: "Course not found!",
+              redirectUrl: `http://localhost:5173/course-detail/${courseId}`,
+          });
+      }
+
+      // Create pending course purchase
+      const newPurchase = new CoursePurchase({
+          courseId,
+          userId,
+          amount: course.coursePrice,
+          status: "pending",
+          paymentId: `PAY_${Date.now()}`,
+          paymentMethod,
+          upiId: paymentMethod === "upi" ? upiId : undefined,
+          cardNumber: paymentMethod === "card" ? cardNumber : undefined,
       });
-    }
 
-    // Create a pending course purchase record
-    const newPurchase = new CoursePurchase({
-      courseId,
-      userId,
-      amount: course.coursePrice,
-      status: "pending", // Pending status for the payment
-      paymentId: `PAY_${Date.now()}`, // Unique payment ID for pending payment
-    });
+      await newPurchase.save();
 
-    await newPurchase.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Payment initialized. Waiting for confirmation!",
-      redirectUrl: `http://localhost:5173/course-progress/${courseId}`, // Redirect to course progress
-    });
+      return res.status(200).json({
+          success: true,
+          message: `Payment initialized for ${userName}. Waiting for confirmation!`, // ✅ Show username
+          redirectUrl: `http://localhost:5173/course-progress/${courseId}`,
+      });
   } catch (error) {
-    console.error("Payment Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Payment failed. Please try again!",
-      redirectUrl: `http://localhost:5173/course-detail/${req.body.courseId}`, // Redirect to course details on failure
-    });
+      return res.status(500).json({
+          success: false,
+          message: "Payment failed. Please try again!",
+          redirectUrl: `http://localhost:5173/course-detail/${req.body.courseId}`,
+      });
   }
 };
 
+export const storePayment = async (req, res) => {
+  try {
+    const { courseId, userId, amount, paymentMethod, upiId, cardNumber } = req.body;
+
+    if (!courseId || !userId || !amount || !paymentMethod) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    // Generate a random Payment ID (simulating a real payment gateway)
+    const paymentId = "PAY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+    // Create a new payment entry
+    const newPayment = await CoursePurchase.create({
+      courseId,
+      userId,
+      amount,
+      paymentId,
+      paymentMethod,
+      upiId,
+      cardNumber,
+      status: "success", // ✅ Assuming payment is always successful in this fake gateway
+    });
+
+    return res.status(201).json({ success: true, message: "Payment successful", data: newPayment });
+  } catch (error) {
+    console.error("❌ Server Error:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 /**
  * Webhook to handle payment success and update records
  */
@@ -142,20 +173,17 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
 /**
  * Get all purchased courses
  */
-export const getAllPurchasedCourse = async (_, res) => {
+export const getAllPurchasedCourse = async (req, res) => {
   try {
-    const purchasedCourse = await CoursePurchase.find({
+    const userId = req.user.id; // Ensure fetching for the logged-in user
+
+    const purchasedCourses = await CoursePurchase.find({
+      userId,
       status: "completed",
     }).populate("courseId");
 
-    if (!purchasedCourse.length) {
-      return res.status(404).json({
-        purchasedCourse: [],
-      });
-    }
-
     return res.status(200).json({
-      purchasedCourse,
+      purchasedCourses,
     });
   } catch (error) {
     console.log("Error fetching purchased courses:", error);
