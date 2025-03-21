@@ -9,17 +9,16 @@ import {
 
 const router = express.Router();
 
-// ✅ Add the missing `/storePayment` route
-router.route("/storePayment").post(isAuthenticated, createCheckoutSession);
-
-// Payment Routes
+// ✅ Initiate checkout session (creates pending payment)
 router.route("/checkout/create-checkout-session").post(isAuthenticated, createCheckoutSession);
+
+// ✅ Webhook endpoint to confirm payment and complete enrollment
 router.route("/webhook").post(express.raw({ type: "application/json" }), paymentWebhook);
 
-// Course Details
+// ✅ Get course detail with user purchase status
 router.route("/course/:courseId/detail-with-status").get(getCourseDetailWithPurchaseStatus);
 
-// General Route (Fetch all purchased courses)
+// ✅ Get all courses purchased by the logged-in user
 router.route("/").get(isAuthenticated, getAllPurchasedCourse);
 
 export default router;

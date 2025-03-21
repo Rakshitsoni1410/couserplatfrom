@@ -9,133 +9,100 @@ import { webhookSignatureVerification } from "../utils/paymentWebhook.js";
  */
 export const createCheckoutSession = async (req, res) => {
   try {
-      const { id: userId, name: userName } = req.user;  // ✅ Get user details
-      const { courseId, paymentMethod, upiId, cardNumber } = req.body;
+    const { id: userId, name: userName } = req.user;
+    const { courseId, paymentMethod, upiId, cardNumber } = req.body;
 
-      // Find the course
-      const course = await Course.findById(courseId);
-      if (!course) {
-          return res.status(404).json({
-              success: false,
-              message: "Course not found!",
-              redirectUrl: `http://localhost:5173/course-detail/${courseId}`,
-          });
-      }
-
-      // Create pending course purchase
-      const newPurchase = new CoursePurchase({
-          courseId,
-          userId,
-          amount: course.coursePrice,
-          status: "pending",
-          paymentId: `PAY_${Date.now()}`,
-          paymentMethod,
-          upiId: paymentMethod === "upi" ? upiId : undefined,
-          cardNumber: paymentMethod === "card" ? cardNumber : undefined,
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found!",
+        redirectUrl: `http://localhost:5173/course-detail/${courseId}`,
       });
-
-      await newPurchase.save();
-
-      return res.status(200).json({
-          success: true,
-          message: `Payment initialized for ${userName}. Waiting for confirmation!`, // ✅ Show username
-          redirectUrl: `http://localhost:5173/course-progress/${courseId}`,
-      });
-  } catch (error) {
-      return res.status(500).json({
-          success: false,
-          message: "Payment failed. Please try again!",
-          redirectUrl: `http://localhost:5173/course-detail/${req.body.courseId}`,
-      });
-  }
-};
-
-export const storePayment = async (req, res) => {
-  try {
-    const { courseId, userId, amount, paymentMethod, upiId, cardNumber } = req.body;
-
-    if (!courseId || !userId || !amount || !paymentMethod) {
-      return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    // Generate a random Payment ID (simulating a real payment gateway)
-    const paymentId = "PAY-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    const paymentId = `PAY_${Date.now()}`;
 
-    // Create a new payment entry
-    const newPayment = await CoursePurchase.create({
+    const newPurchase = new CoursePurchase({
       courseId,
       userId,
-      amount,
+      amount: course.coursePrice,
+      status: "pending",
       paymentId,
       paymentMethod,
-      upiId,
-      cardNumber,
-      status: "success", // ✅ Assuming payment is always successful in this fake gateway
+      upiId: paymentMethod === "upi" ? upiId : undefined,
+      cardNumber: paymentMethod === "card" ? cardNumber : undefined,
     });
 
-    return res.status(201).json({ success: true, message: "Payment successful", data: newPayment });
+    await newPurchase.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Payment initialized for ${userName}. Waiting for confirmation!`,
+      paymentId,
+      redirectUrl: `http://localhost:5173/course-progress/${courseId}`,
+    });
   } catch (error) {
-    console.error("❌ Server Error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error("Checkout Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Payment failed. Please try again!",
+      redirectUrl: `http://localhost:5173/course-detail/${req.body.courseId}`,
+    });
   }
 };
-/**
- * Webhook to handle payment success and update records
- */
+
 export const paymentWebhook = async (req, res) => {
   try {
     const payload = req.body;
 
-    // Verify the webhook signature using a utility
-    const isValidWebhook = webhookSignatureVerification(req);
-
+    const isValidWebhook = webhookSignatureVerification(req); // Simulated checker
     if (!isValidWebhook) {
       return res.status(400).send("Invalid Webhook Signature");
     }
 
-    // Assuming event type of 'payment.success'
-    const event = payload.event;
-
-    if (event === "payment.success") {
-      const paymentData = payload.data;
-      const purchase = await CoursePurchase.findOne({
-        paymentId: paymentData.paymentId,
-      }).populate("courseId");
-
-      if (!purchase) {
-        return res.status(404).json({ message: "Purchase not found" });
-      }
-
-      // Update the purchase status to completed
-      purchase.status = "completed";
-
-      // Make all lectures visible by setting `isPreviewFree` to true
-      if (purchase.courseId && purchase.courseId.lectures.length > 0) {
-        await Lecture.updateMany(
-          { _id: { $in: purchase.courseId.lectures } },
-          { $set: { isPreviewFree: true } }
-        );
-      }
-      await purchase.save();
-
-      // Update user's enrolledCourses
-      await User.findByIdAndUpdate(
-        purchase.userId,
-        { $addToSet: { enrolledCourses: purchase.courseId._id } }, // Add course ID to enrolledCourses
-        { new: true }
-      );
-
-      // Update course to add user ID to enrolledStudents
-      await Course.findByIdAndUpdate(
-        purchase.courseId._id,
-        { $addToSet: { enrolledStudents: purchase.userId } }, // Add user ID to enrolledStudents
-        { new: true }
-      );
-
-      return res.status(200).json({ success: true, message: "Payment successful and course enrolled!" });
+    if (payload.event !== "payment.success") {
+      return res.status(400).json({ message: "Invalid event type" });
     }
 
-    res.status(400).json({ message: "Invalid event" });
+    const paymentData = payload.data;
+
+    const purchase = await CoursePurchase.findOne({
+      paymentId: paymentData.paymentId,
+    }).populate("courseId");
+
+    if (!purchase) {
+      return res.status(404).json({ message: "Purchase not found" });
+    }
+
+    purchase.status = "completed";
+
+    // Unlock all lectures
+    if (purchase.courseId?.lectures?.length > 0) {
+      await Lecture.updateMany(
+        { _id: { $in: purchase.courseId.lectures } },
+        { $set: { isPreviewFree: true } }
+      );
+    }
+
+    await purchase.save();
+
+    // Add course to user's enrolledCourses
+    await User.findByIdAndUpdate(
+      purchase.userId,
+      { $addToSet: { enrolledCourses: purchase.courseId._id } }
+    );
+
+    // Add user to course's enrolledStudents
+    await Course.findByIdAndUpdate(
+      purchase.courseId._id,
+      { $addToSet: { enrolledStudents: purchase.userId } }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment successful and course enrolled!",
+    });
   } catch (error) {
     console.error("Webhook Error:", error);
     return res.status(500).json({ message: "Internal Server Error" });

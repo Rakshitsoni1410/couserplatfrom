@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useGetCourseDetailWithStatusQuery, useStorePaymentMutation } from "@/features/api/purchaseApi";
+import { useGetCourseDetailWithStatusQuery, useCreateCheckoutSessionMutation  } from "@/features/api/purchaseApi";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcDiscover, FaCreditCard, FaGooglePay, FaAmazonPay, FaPhoneAlt } from "react-icons/fa";
 import { SiPaytm } from "react-icons/si";
 import { toast } from "sonner";  // ✅ Import toast
@@ -21,8 +21,7 @@ const PaymentPage = () => {
 
   // ✅ RTK Query Hooks
   const { data, isLoading, isError } = useGetCourseDetailWithStatusQuery(courseId, { skip: !courseId });
-  const [storePayment] = useStorePaymentMutation();  // ✅ Use the payment API mutation
-
+  const [createCheckoutSession] = useCreateCheckoutSessionMutation();
   useEffect(() => {
 
     if (!courseId) {
@@ -38,58 +37,46 @@ const PaymentPage = () => {
 
   const { course } = data;
   const handlePayment = async () => {
+    if (!course || !course._id) {
+      toast.error("Course info missing!");
+      return;
+    }
+  
+    if (paymentMethod === "upi" && !upiId) {
+      toast.error("Please enter UPI ID");
+      return;
+    }
+  
+    if (paymentMethod === "card" && cardDetails.cardNumber.length !== 16) {
+      toast.error("Card number must be 16 digits");
+      return;
+    }
+  
     try {
-      if (!course || !course._id) {
-        console.error("❌ Course data is missing!");
-        return;
-      }
-
-      const selectedPaymentMethod = paymentMethod;  // Ensure it's correctly assigned
-
-      // ✅ Define `paymentData` properly before using it
-      const paymentData = {
+      setLoading(true);
+      const res = await createCheckoutSession({
         courseId: course._id,
-        paymentMethod: selectedPaymentMethod,
-      };
-
-      // Add UPI ID if UPI is selected
-      if (selectedPaymentMethod === "upi") {
-        if (!upiId) {
-          console.error("❌ UPI ID is required for UPI payment!");
-          toast.error("UPI ID is required.");
-          return;
-        }
-        paymentData.upiId = upiId;
-      }
-
-      // Add Card details if Card is selected
-      if (selectedPaymentMethod === "card") {
-        if (!cardDetails.cardNumber || cardDetails.cardNumber.length !== 16) {
-          console.error("❌ Card Number must be 16 digits!");
-          toast.error("Card Number must be 16 digits.");
-          return;
-        }
-        paymentData.cardNumber = cardDetails.cardNumber;
-      }
-
-      const response = await storePayment(paymentData);
-      setLoading(false);
-
-      console.log("✅ Full Payment API Response:", response); // Log full response
-
-      if (response.error) {
-        console.error("❌ Payment API Error:", response.error);
-        toast.error(response.error.data?.message || "Payment failed. Please try again.");
+        paymentMethod,
+        cardNumber: paymentMethod === "card" ? cardDetails.cardNumber : undefined,
+        upiId: paymentMethod === "upi" ? upiId : undefined,
+      });
+  
+      if (res.error) {
+        toast.error(res.error.data?.message || "Payment failed.");
       } else {
-        toast.success("✅ Payment successful!");
-        navigate(`/course-detail/${course._id}`);
+        toast.success("Payment initiated!");
+        setTimeout(() => {
+          navigate(`/course-detail/${course._id}`);
+        }, 2000);
       }
-    } catch (error) {
-      console.error("❌ Unexpected Payment Error:", error);
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error("Unexpected error occurred.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
-
+  
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-gray-100 p-10 space-y-12 lg:space-y-0 lg:space-x-14">

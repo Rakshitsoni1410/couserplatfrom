@@ -16,13 +16,6 @@ export const purchaseApi = createApi({
         body: { courseId },
       }),
     }),
-    storePayment: builder.mutation({  // ✅ Add this missing mutation
-      query: (paymentData) => ({
-        url: "/storePayment",  // This should match the backend route
-        method: "POST",
-        body: paymentData,
-      }),
-    }),
     getCourseDetailWithStatus: builder.query({
       query: (courseId) => ({
         url: `/course/${courseId}/detail-with-status`,
@@ -40,7 +33,6 @@ export const purchaseApi = createApi({
 
 export const {
   useCreateCheckoutSessionMutation,
-  useStorePaymentMutation,  // ✅ Export the new hook
   useGetCourseDetailWithStatusQuery,
   useGetPurchsedCoursesQuery,
 } = purchaseApi;
