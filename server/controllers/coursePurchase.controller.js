@@ -3,15 +3,24 @@ import { CoursePurchase } from "../models/coursePurchase.model.js";
 import { Lecture } from "../models/lecture.model.js";
 import { User } from "../models/user.model.js";
 import { webhookSignatureVerification } from "../utils/paymentWebhook.js"; 
-
+import  mongoose   from "mongoose";
 /**
  * Real Payment Processing (Transaction Pending)
  */
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { id: userId, name: userName } = req.user;
-    const { courseId, paymentMethod, upiId, cardNumber } = req.body;
+    const userId = req.id; // ⬅️ Authenticated user's ID
+    const { courseId, paymentMethod, cardNumber } = req.body;
 
+    // ✅ Validate courseId
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid courseId!",
+      });
+    }
+
+    // ✅ Check course existence
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({
@@ -21,24 +30,26 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
+    // ✅ Generate a fake payment ID
     const paymentId = `PAY_${Date.now()}`;
 
+    // ✅ Create a new purchase entry
     const newPurchase = new CoursePurchase({
       courseId,
       userId,
       amount: course.coursePrice,
       status: "pending",
       paymentId,
-      paymentMethod,
-      upiId: paymentMethod === "upi" ? upiId : undefined,
-      cardNumber: paymentMethod === "card" ? cardNumber : undefined,
+      paymentMethod, // Optional: "card" or "upi"
+      cardNumber,    // Optional: only if card is used
     });
 
     await newPurchase.save();
 
+    // ✅ Respond with redirect info
     return res.status(200).json({
       success: true,
-      message: `Payment initialized for ${userName}. Waiting for confirmation!`,
+      message: `Payment initialized. Waiting for confirmation!`,
       paymentId,
       redirectUrl: `http://localhost:5173/course-progress/${courseId}`,
     });
@@ -51,33 +62,24 @@ export const createCheckoutSession = async (req, res) => {
     });
   }
 };
-
+// payment web hook 
 export const paymentWebhook = async (req, res) => {
   try {
-    const payload = req.body;
+    console.log("🔔 Webhook triggered!", req.body);
 
-    const isValidWebhook = webhookSignatureVerification(req); // Simulated checker
-    if (!isValidWebhook) {
-      return res.status(400).send("Invalid Webhook Signature");
-    }
+    const { event, data } = req.body;
 
-    if (payload.event !== "payment.success") {
+    if (event !== "payment.success") {
       return res.status(400).json({ message: "Invalid event type" });
     }
 
-    const paymentData = payload.data;
+    const purchase = await CoursePurchase.findOne({ paymentId: data.paymentId }).populate("courseId");
 
-    const purchase = await CoursePurchase.findOne({
-      paymentId: paymentData.paymentId,
-    }).populate("courseId");
-
-    if (!purchase) {
-      return res.status(404).json({ message: "Purchase not found" });
-    }
+    if (!purchase) return res.status(404).json({ message: "Purchase not found" });
 
     purchase.status = "completed";
+    if (data.amount) purchase.amount = data.amount;
 
-    // Unlock all lectures
     if (purchase.courseId?.lectures?.length > 0) {
       await Lecture.updateMany(
         { _id: { $in: purchase.courseId.lectures } },
@@ -87,25 +89,21 @@ export const paymentWebhook = async (req, res) => {
 
     await purchase.save();
 
-    // Add course to user's enrolledCourses
     await User.findByIdAndUpdate(
       purchase.userId,
       { $addToSet: { enrolledCourses: purchase.courseId._id } }
     );
 
-    // Add user to course's enrolledStudents
     await Course.findByIdAndUpdate(
       purchase.courseId._id,
       { $addToSet: { enrolledStudents: purchase.userId } }
     );
 
-    return res.status(200).json({
-      success: true,
-      message: "Payment successful and course enrolled!",
-    });
-  } catch (error) {
-    console.error("Webhook Error:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    res.status(200).json({ success: true, message: "Payment completed!" });
+
+  } catch (err) {
+    console.error("❌ Webhook error:", err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

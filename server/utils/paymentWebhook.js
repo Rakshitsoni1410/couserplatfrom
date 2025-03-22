@@ -18,7 +18,7 @@ export const webhookSignatureVerification = (req) => {
 
     const expectedSignature = crypto
       .createHmac("sha256", secret)
-      .update(Buffer.from(payload, "utf8")) // Ensures secure payload processing
+      .update(Buffer.from(payload, "utf8")) // UTF-8 encoding is best practice
       .digest("hex");
 
     return expectedSignature === signature;

@@ -9,16 +9,12 @@ import {
 
 const router = express.Router();
 
-// ✅ Initiate checkout session (creates pending payment)
-router.route("/checkout/create-checkout-session").post(isAuthenticated, createCheckoutSession);
+// purchase.routes.js
+router.use(express.json()); // unless you're handling it globally
 
-// ✅ Webhook endpoint to confirm payment and complete enrollment
-router.route("/webhook").post(express.raw({ type: "application/json" }), paymentWebhook);
-
-// ✅ Get course detail with user purchase status
-router.route("/course/:courseId/detail-with-status").get(getCourseDetailWithPurchaseStatus);
-
-// ✅ Get all courses purchased by the logged-in user
-router.route("/").get(isAuthenticated, getAllPurchasedCourse);
+router.post("/checkout/create-checkout-session", isAuthenticated, createCheckoutSession);
+router.post("/webhook", express.raw({ type: "application/json" }), paymentWebhook);
+router.get("/course/:courseId/detail-with-status", getCourseDetailWithPurchaseStatus);
+router.get("/", isAuthenticated, getAllPurchasedCourse);
 
 export default router;
