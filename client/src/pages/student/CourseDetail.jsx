@@ -27,11 +27,7 @@ const CourseDetail = () => {
 
   const { course, purchased } = data;
 
-  const handleContinueCourse = () => {
-    if (purchased) {
-      navigate(`/course-progress/${courseId}`);
-    }
-  };
+
 
   return (
     <div className="space-y-5 pt-20">
@@ -120,10 +116,10 @@ const CourseDetail = () => {
               </h1>
             </CardContent>
             <CardFooter className="flex justify-center p-4">
-              {purchased ? (
-                <Button onClick={handleContinueCourse} className="w-full">
-                  Continue Course
-                </Button>
+              {data.purchased ? (
+                <Link to={`/course-progress/${data.course._id}`} className="w-full">
+                  <Button className="w-full">Continue Course</Button>
+                </Link>
               ) : (
                 <BuyCourseButton courseId={course?._id} />
               )}

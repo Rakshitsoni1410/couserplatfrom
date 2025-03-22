@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const BuyCourseButton = ({ courseId }) => {

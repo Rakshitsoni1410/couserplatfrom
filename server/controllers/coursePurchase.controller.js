@@ -2,7 +2,6 @@ import { Course } from "../models/course.model.js";
 import { CoursePurchase } from "../models/coursePurchase.model.js";
 import { Lecture } from "../models/lecture.model.js";
 import { User } from "../models/user.model.js";
-import { webhookSignatureVerification } from "../utils/paymentWebhook.js"; 
 import  mongoose   from "mongoose";
 /**
  * Real Payment Processing (Transaction Pending)
@@ -30,6 +29,21 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
+    // ✅ Check if user already purchased the course
+    const existingPurchase = await CoursePurchase.findOne({
+      courseId,
+      userId,
+      status: "completed"
+    });
+
+    if (existingPurchase) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already purchased this course!",
+        redirectUrl: `http://localhost:5173/course-progress/${courseId}`
+      });
+    }
+
     // ✅ Generate a fake payment ID
     const paymentId = `PAY_${Date.now()}`;
 
@@ -40,8 +54,8 @@ export const createCheckoutSession = async (req, res) => {
       amount: course.coursePrice,
       status: "pending",
       paymentId,
-      paymentMethod, // Optional: "card" or "upi"
-      cardNumber,    // Optional: only if card is used
+      paymentMethod,
+      cardNumber,
     });
 
     await newPurchase.save();
@@ -62,12 +76,14 @@ export const createCheckoutSession = async (req, res) => {
     });
   }
 };
+
 // payment web hook 
 export const paymentWebhook = async (req, res) => {
   try {
-    console.log("🔔 Webhook triggered!", req.body);
+    const rawBody = req.body.toString(); // convert raw buffer to string
+    const { event, data } = JSON.parse(rawBody);
 
-    const { event, data } = req.body;
+    console.log("🔔 Webhook Event Received:", event, data);
 
     if (event !== "payment.success") {
       return res.status(400).json({ message: "Invalid event type" });
@@ -119,7 +135,7 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
       .populate({ path: "creator" })
       .populate({ path: "lectures" });
 
-    const purchased = await CoursePurchase.findOne({ userId, courseId });
+    const purchased = await CoursePurchase.findOne({ userId, courseId ,status:"completed" });
 
     if (!course) {
       return res.status(404).json({ message: "Course not found!" });
