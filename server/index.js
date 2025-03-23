@@ -7,6 +7,7 @@ import cors from 'cors';
 import courseRoute from './routes/course.route.js';
 import mediaRoute from './routes/media.route.js';
 import purchaseRoute from './routes/purchaseCourse.route.js';
+import { paymentWebhook } from './controllers/coursePurchase.controller.js'; // ✅ Import controller directly
 
 dotenv.config();
 
@@ -18,22 +19,27 @@ connectDB()
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Use express.raw() ONLY for webhook route BEFORE json parser
-app.use("/api/v1/purchase/webhook", express.raw({ type: "application/json" }));
-
-// ✅ Then apply other global middlewares
-app.use(express.json());
-app.use(cookieParser());
+// ✅ Apply CORS before any route
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
 }));
 
+// ✅ Handle preflight requests
+app.options("*", cors());
+
+// ✅ Webhook route - must come AFTER cors, but BEFORE express.json()
+app.post("/api/v1/purchase/webhook", express.raw({ type: "application/json" }), paymentWebhook);
+
+// ✅ Global middlewares
+app.use(express.json());
+app.use(cookieParser());
+
 // ✅ API Routes
 app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
-app.use("/api/v1/purchase", purchaseRoute);
+app.use("/api/v1/purchase", purchaseRoute); // NOTE: /webhook already handled separately
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

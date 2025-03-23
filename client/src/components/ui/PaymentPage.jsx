@@ -112,13 +112,29 @@ const PaymentPage = () => {
         const res = await createCheckoutSession({
           courseId: course._id,
           paymentMethod: "card",
-          cardNumber: cardDetails.cardNumber,
+          cardNumber,
         });
     
         if (res.error) {
           toast.error(res.error.data?.message || "Payment failed.");
         } else {
           toast.success("Payment initiated!");
+          // ✅ Trigger Webhook Manually
+          await fetch("http://localhost:8008/api/v1/purchase/webhook", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // Don't use raw content-type in frontend
+            },
+            body: JSON.stringify({
+              event: "payment.success",
+              data: {
+                paymentId: res.data.paymentId,
+                amount: course.coursePrice,
+              },
+            }),
+          });
+    
+          toast.success("Payment confirmed!");
           setTimeout(() => {
             navigate(`/course-progress/${course._id}`);
           }, 2000);

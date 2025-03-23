@@ -80,11 +80,7 @@ export const createCheckoutSession = async (req, res) => {
 // payment web hook 
 export const paymentWebhook = async (req, res) => {
   try {
-    const rawBody = req.body.toString(); // convert raw buffer to string
-    const { event, data } = JSON.parse(rawBody);
-
-    console.log("🔔 Webhook Event Received:", event, data);
-
+    const { event, data } = JSON.parse(req.body.toString());
     if (event !== "payment.success") {
       return res.status(400).json({ message: "Invalid event type" });
     }
@@ -156,7 +152,8 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
  */
 export const getAllPurchasedCourse = async (req, res) => {
   try {
-    const userId = req.user.id; // Ensure fetching for the logged-in user
+    const userId = req.user.id; // Ensure fetching for the logged-in user  const userId = req.id;
+
 
     const purchasedCourses = await CoursePurchase.find({
       userId,
