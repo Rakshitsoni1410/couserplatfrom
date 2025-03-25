@@ -1,10 +1,17 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { useGetCourseProgressQuery } from '@/features/api/courseProgressApi';
 import { CheckCircle2, CirclePlay } from 'lucide-react';
 import React from 'react';
-
+import { useParams } from 'react-router-dom';
 const CourseProgress = () => {
+  const params = useParams();
+  const courseId =params.courseId;
+  const {data,isLoading,isError,refetch} =useGetCourseProgressQuery(courseId);
+  if(isLoading)return<p>Loading...</p>
+  if (isError) return<p>failed to load course dataiks</p>;
+  console.log(data);
   const isCompleted = true;
 
   return (
