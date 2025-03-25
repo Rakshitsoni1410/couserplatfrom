@@ -95,6 +95,11 @@ export const markAsCompleted = async (req, res) => {
     courseProgress.lectureProgress.map(
       (lectureProgress) => (lectureProgress.viewed = true)
     );
+    courseProgress.completed = true;
+    await courseProgress.save();
+    return res.status(200).json({
+      message: "Course mark as completed successfully",
+    });
   } catch (error) {
     console.log(error);
   }
