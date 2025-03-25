@@ -59,5 +59,4 @@ const CourseProgress = () => {
     </div>
   );
 };
-
 export default CourseProgress;
