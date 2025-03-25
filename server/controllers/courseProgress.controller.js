@@ -104,3 +104,30 @@ export const markAsCompleted = async (req, res) => {
     console.log(error);
   }
 };
+
+export const markAsInCompleted = async (req, res) => {
+    try {
+      const { courseId } = req.params;
+      const userId = req.id;
+      const courseProgress = await CourseProgress.findOne({
+        courseId,
+        userId,
+      });
+      if (!courseProgress) {
+        return res.status(404).json({
+          message: "Course progress not found",
+        });
+      }
+      courseProgress.lectureProgress.map(
+        (lectureProgress) => (lectureProgress.viewed = false)
+      );
+      courseProgress.completed = false;
+      await courseProgress.save();
+      return res.status(200).json({
+        message: "Course mark as incompleted ",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
