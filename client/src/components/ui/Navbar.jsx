@@ -48,7 +48,7 @@ const Navbar = () => {
   }, [isSuccess, data, navigate]); // Add missing dependencies to `useEffect`
 
   return (
-    <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
+    <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
       {/* Left Section (Logo & Name) - Only for Desktop */}
       <div className="hidden md:flex items-center gap-2">
         <School size={30} />
