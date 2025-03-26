@@ -28,6 +28,8 @@ import {
   AuthenticatedUser,
   ProtectedRoute,
 } from "./components/ui/ProtectedRoutes";
+import PurchaseCourseProtectedRoute from "./components/ui/PurchaseCourseProtectedRoute";
+import { ThemeProvider } from "./components/ui/ThemeProvider";
 
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
