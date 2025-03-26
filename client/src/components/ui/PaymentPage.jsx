@@ -116,29 +116,44 @@ const PaymentPage = () => {
         });
     
         if (res.error) {
-          toast.error(res.error.data?.message || "Payment failed.");
-        } else {
-          toast.success("Payment initiated!");
-          // ✅ Trigger Webhook Manually
-          await fetch("http://localhost:8008/api/v1/purchase/webhook", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json", // Don't use raw content-type in frontend
-            },
-            body: JSON.stringify({
-              event: "payment.success",
-              data: {
-                paymentId: res.data.paymentId,
-                amount: course.coursePrice,
-              },
-            }),
-          });
+          const errorMsg = res.error.data?.message || "Payment failed.";
+          const redirectUrl = res.error.data?.redirectUrl;
     
-          toast.success("Payment confirmed!");
-          setTimeout(() => {
-            navigate(`/course-progress/${course._id}`);
-          }, 2000);
+          toast.error(errorMsg);
+    
+          if (
+            errorMsg.includes("already purchased") &&
+            redirectUrl
+          ) {
+            setTimeout(() => {
+              navigate(`/course-progress/${course._id}`);
+            }, 1500);
+          }
+    
+          return;
         }
+    
+        toast.success("Payment initiated!");
+    
+        // ✅ Trigger webhook manually
+           await fetch("http://localhost:8008/api/v1/purchase/webhook", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            event: "payment.success",
+            data: {
+              paymentId: res.data.paymentId,
+              amount: course.coursePrice,
+            },
+          }),
+        });
+    
+        toast.success("Payment confirmed!");
+        setTimeout(() => {
+          navigate(`/course-progress/${course._id}`);
+        }, 2000);
       } catch (err) {
         toast.error("Unexpected error occurred.");
         console.error(err);
@@ -146,7 +161,7 @@ const PaymentPage = () => {
         setLoading(false);
       }
     };
-    
+     
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-gray-100 p-10 space-y-12 lg:space-y-0 lg:space-x-14">
       {/* Left Side - Course Info */}
