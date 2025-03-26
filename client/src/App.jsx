@@ -22,6 +22,7 @@ import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
 import PaymentPage from "./components/ui/PaymentPage";
 import CourseProgress from "./pages/student/CourseProgress";
+import SearchPage from "./pages/student/SearchPage";
 
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
@@ -50,6 +51,10 @@ const appRouter = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />, // ✅ User profile page
+      },
+      {
+        path:"course/search",
+        element: <SearchPage/>,
       },
       {
         path: "course-detail/:courseId", // ✅ Course details page
