@@ -66,7 +66,7 @@ const Profile = () => {
   if (!user) return <h1>User data not found</h1>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 my-24">
+    <div className="max-w-4xl mx-auto px-4 my-10">
       <h1 className="font-bold text-2xl text-center md:text-left">Profile</h1>
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8 my-5">
         <div className="flex flex-col items-center">
