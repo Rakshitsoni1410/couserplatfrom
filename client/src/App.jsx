@@ -90,9 +90,7 @@ const appRouter = createBrowserRouter([
       {
         path: "payment/:courseId", // ✅ Payment page for purchasing a course
         element: (
-          <PurchaseCourseProtectedRoute>
             <PaymentPage />
-          </PurchaseCourseProtectedRoute>
         ),
       },
       {
