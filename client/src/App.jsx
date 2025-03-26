@@ -23,6 +23,11 @@ import CourseDetail from "./pages/student/CourseDetail";
 import PaymentPage from "./components/ui/PaymentPage";
 import CourseProgress from "./pages/student/CourseProgress";
 import SearchPage from "./pages/student/SearchPage";
+import {
+  AdminRoute,
+  AuthenticatedUser,
+  ProtectedRoute,
+} from "./components/ui/ProtectedRoutes";
 
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
@@ -42,36 +47,68 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login />, // ✅ Login page
+        element: (
+          <AuthenticatedUser>
+            <Login />
+          </AuthenticatedUser>
+        ), // ✅ Login page
       },
       {
         path: "my-learning",
-        element: <MyLearning />, // ✅ User's learning section
+        element: (
+          <ProtectedRoute>
+            <MyLearning />
+          </ProtectedRoute>
+        ), // ✅ User's learning section
       },
       {
         path: "profile",
-        element: <Profile />, // ✅ User profile page
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ), // ✅ User profile page
       },
       {
-        path:"course/search",
-        element: <SearchPage/>,
+        path: "course/search",
+        element: (
+          <ProtectedRoute>
+            <SearchPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "course-detail/:courseId", // ✅ Course details page
-        element: <CourseDetail />,
+        element: (
+          <ProtectedRoute>
+            <CourseDetail />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "payment/:courseId", // ✅ Payment page for purchasing a course
-        element: <PaymentPage />,
+        element: (
+          <PurchaseCourseProtectedRoute>
+            <PaymentPage />
+          </PurchaseCourseProtectedRoute>
+        ),
       },
       {
         path: "course-progress/:courseId", // ✅ Course details page
-        element: <CourseProgress />,
+        element: (
+          <ProtectedRoute>
+            <CourseProgress />
+          </ProtectedRoute>
+        ),
       },
       // 📌 Admin Routes (Requires authentication)
       {
         path: "admin",
-        element: <Sidebar />, // ✅ Sidebar wrapper for admin panel
+        element: (
+          <AdminRoute>
+            <Sidebar />
+          </AdminRoute>
+        ), // ✅ Sidebar wrapper for admin panel
         children: [
           {
             path: "dashboard",
@@ -107,7 +144,9 @@ const appRouter = createBrowserRouter([
 function App() {
   return (
     <main>
-      <RouterProvider router={appRouter} />
+      <ThemeProvider>
+        <RouterProvider router={appRouter} />
+      </ThemeProvider>
     </main>
   );
 }
