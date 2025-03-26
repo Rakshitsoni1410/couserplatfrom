@@ -130,5 +130,5 @@ const CourseDetail = () => {
     </div>
   );
 };
-
+//course continue in complete for bugs
 export default CourseDetail;

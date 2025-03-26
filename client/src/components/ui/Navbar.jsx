@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Add import for useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, School } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -14,10 +14,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useLogoutUserMutation } from "@/features/api/authApi"; // Correct hook import
+import { useLogoutUserMutation } from "@/features/api/authApi";
 import { toast } from "sonner";
-
-// Import DropdownMenu components
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,26 +24,25 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"; // Check this import path
+} from "@/components/ui/dropdown-menu";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.auth);
-  const navigate = useNavigate(); // Use useNavigate hook
+  const navigate = useNavigate();
 
-  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation(); // Correctly call the useLogoutUserMutation hook
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
 
   const logoutHandler = async () => {
-    await logoutUser(); // Trigger the logout mutation
+    await logoutUser();
   };
-  console.log(user);
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success(data?.message || "Logged out successfully."); // Show success message after logout
-      navigate("/login"); // Redirect to login page after successful logout
+      toast.success(data?.message || "Logged out successfully.");
+      navigate("/login");
     }
-  }, [isSuccess, data, navigate]); // Add missing dependencies to `useEffect`
+  }, [isSuccess, data, navigate]);
 
   return (
     <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-gray-200 fixed top-0 left-0 right-0 duration-300 z-10 flex items-center px-4">
@@ -59,7 +56,6 @@ const Navbar = () => {
 
       {/* Desktop View */}
       <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full w-full">
-        {/* User icons and dark mode */}
         <div className="flex items-center gap-8 ml-auto">
           {user ? (
             <DropdownMenu>
@@ -111,7 +107,7 @@ const Navbar = () => {
       {/* Mobile View */}
       <div className="w-full flex md:hidden items-center justify-between h-full px-4">
         <h1 className="font-extrabold text-2xl">E-Learning</h1>
-        <MobileNavbar />
+        <MobileNavbar user={user} logoutHandler={logoutHandler} />
       </div>
     </div>
   );
@@ -119,8 +115,9 @@ const Navbar = () => {
 
 export default Navbar;
 
-const MobileNavbar = () => {
-  const role = "instructor"; // Example role, can be dynamic based on logged-in user
+// ✅ Fixed MobileNavbar
+const MobileNavbar = ({ user, logoutHandler }) => {
+  const navigate = useNavigate();
 
   return (
     <div className="z-20">
@@ -140,15 +137,21 @@ const MobileNavbar = () => {
             <DarkMode />
           </SheetHeader>
           <Separator className="mr-2" />
-          <nav className="flex flex-col space-y-4">
-            <Link to="my-learning">My Learning</Link>
-            <Link to="profile">Edit Profile</Link>
-            <p>Logout</p>
+
+          <nav className="flex flex-col space-y-4 mt-4">
+            <Link to="/my-learning">My Learning</Link>
+            <Link to="/profile">Edit Profile</Link>
+            <Button variant="ghost" onClick={logoutHandler}>
+              Logout
+            </Button>
           </nav>
-          {role === "instructor" && (
-            <SheetFooter>
+
+          {user?.role === "instructor" && (
+            <SheetFooter className="mt-auto">
               <SheetClose asChild>
-                <Button type="submit">Dashboard</Button>
+                <Button onClick={() => navigate("/admin/dashboard")}>
+                  Dashboard
+                </Button>
               </SheetClose>
             </SheetFooter>
           )}
