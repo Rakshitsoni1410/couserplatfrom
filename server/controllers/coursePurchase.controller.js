@@ -150,21 +150,20 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
 /**
  * Get all purchased courses
  */
-export const getAllPurchasedCourse = async (req, res) => {
+export const getAllPurchasedCourse = async (_, res) => {
   try {
-    const userId = req.user.id; // Ensure fetching for the logged-in user  const userId = req.id;
-
-
-    const purchasedCourses = await CoursePurchase.find({
-      userId,
+    const purchasedCourse = await CoursePurchase.find({
       status: "completed",
     }).populate("courseId");
-
+    if (!purchasedCourse) {
+      return res.status(404).json({
+        purchasedCourse: [],
+      });
+    }
     return res.status(200).json({
-      purchasedCourses,
+      purchasedCourse,
     });
   } catch (error) {
-    console.log("Error fetching purchased courses:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.log(error);
   }
 };
