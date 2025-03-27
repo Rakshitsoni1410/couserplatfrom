@@ -30,6 +30,8 @@ import {
 } from "./components/ui/ProtectedRoutes";
 import PurchaseCourseProtectedRoute from "./components/ui/PurchaseCourseProtectedRoute";
 import { ThemeProvider } from "./components/ui/ThemeProvider";
+import ReviewForm from "./pages/student/ReviewForm";
+import CourseReviewPage from "./pages/student/CourseReviewPage";
 
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
@@ -101,6 +103,15 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "review/:courseId",
+        element: (
+          <ProtectedRoute>
+            <CourseReviewPage />
+          </ProtectedRoute>
+        ),
+      },
+      
       // 📌 Admin Routes (Requires authentication)
       {
         path: "admin",

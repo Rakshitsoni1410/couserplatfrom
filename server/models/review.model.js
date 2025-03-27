@@ -41,4 +41,4 @@ const reviewSchema = new mongoose.Schema(
 // ✅ Prevent duplicate reviews
 reviewSchema.index({ course: 1, student: 1 }, { unique: true });
 
-export default mongoose.model("Review", reviewSchema);
+export const Review = mongoose.model("Review", reviewSchema);

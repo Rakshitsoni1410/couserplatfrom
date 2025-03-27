@@ -8,33 +8,38 @@ export const reviewApi = createApi({
     baseUrl: REVIEW_API,
     credentials: "include",
   }),
+  tagTypes: ["Refetch_Review"], // Optional for refetching
   endpoints: (builder) => ({
     // Create a new review
     addReview: builder.mutation({
       query: (data) => ({
-        url: "add",
+        url: "/add",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Refetch_Review"],
     }),
 
     // Get all reviews for a specific instructor
     getInstructorReviews: builder.query({
-      query: (instructorId) => `instructor/${instructorId}`,
+      query: (instructorId) => `/instructor/${instructorId}`,
+      providesTags: ["Refetch_Review"],
     }),
 
     // Instructor reply to a review
     replyToReview: builder.mutation({
       query: ({ reviewId, reply }) => ({
-        url: `reply/${reviewId}`,
+        url: `/reply/${reviewId}`,
         method: "PUT",
         body: { reply },
       }),
+      invalidatesTags: ["Refetch_Review"],
     }),
 
-    // (Optional) Get reviews for a specific course
+    // Get reviews for a specific course
     getCourseReviews: builder.query({
-      query: (courseId) => `course/${courseId}`,
+      query: (courseId) => `/course/${courseId}`,
+      providesTags: ["Refetch_Review"],
     }),
   }),
 });

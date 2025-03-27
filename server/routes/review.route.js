@@ -4,17 +4,17 @@ import {
   getCourseReviews,
   instructorReplyToReview,
 } from "../controllers/review.controller.js";
-import { isAuthenticated } from "../middlewares/auth.js";
+import isAuthenticated from "../middlewares/isAuthenticated.js";
 
 const router = express.Router();
 
 // ✅ Student submits a review
-router.post("/review", isAuthenticated, createReview);
+router.route("/review").post(isAuthenticated, createReview);
 
 // ✅ Fetch all reviews for a course (for instructor or students)
-router.get("/review/:courseId", getCourseReviews);
+router.route("/review/:courseId", ).get(getCourseReviews);
 
 // ✅ Instructor replies to a review
-router.put("/review/reply/:reviewId", isAuthenticated, instructorReplyToReview);
+router.route("/review/reply/:reviewId") .put(isAuthenticated, instructorReplyToReview);
 
 export default router;

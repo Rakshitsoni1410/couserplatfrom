@@ -9,6 +9,7 @@ import mediaRoute from './routes/media.route.js';
 import purchaseRoute from './routes/purchaseCourse.route.js';
 import { paymentWebhook } from './controllers/coursePurchase.controller.js'; // ✅ Import controller directly
 import  courseProgressRoute from './routes/courseProgress.route.js';
+import reviewRoute from './routes/review.route.js';
 dotenv.config();
 
 console.log("Connecting to Database...");
@@ -41,7 +42,7 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute); // NOTE: /webhook already handled separately
 app.use("/api/v1/progress", courseProgressRoute); 
-
+app.use("/api/v1/review", reviewRoute); // ✅ Use the review route
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
