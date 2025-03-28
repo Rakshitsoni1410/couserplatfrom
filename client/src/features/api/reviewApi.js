@@ -8,45 +8,41 @@ export const reviewApi = createApi({
     baseUrl: REVIEW_API,
     credentials: "include",
   }),
-  tagTypes: ["Refetch_Review"], // Optional for refetching
+  tagTypes: ["Refetch_Review"],
   endpoints: (builder) => ({
-    // Create a new review
+
+    // ✅ Create a new review
     addReview: builder.mutation({
       query: (data) => ({
-        url: "/add",
+        url: "/", // ✅ Fixed: No "/add"
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["Refetch_Review"],
     }),
 
-    // Get all reviews for a specific instructor
-    getInstructorReviews: builder.query({
-      query: (instructorId) => `/instructor/${instructorId}`,
+    // ✅ Get all reviews for a specific course
+    getCourseReviews: builder.query({
+      query: (courseId) => `/${courseId}`, // ✅ Matches backend: /:courseId
       providesTags: ["Refetch_Review"],
     }),
 
-    // Instructor reply to a review
+    // ✅ Instructor reply to a review
     replyToReview: builder.mutation({
       query: ({ reviewId, reply }) => ({
-        url: `/reply/${reviewId}`,
+        url: `/reply/${reviewId}`, // ✅ Correct path
         method: "PUT",
         body: { reply },
       }),
       invalidatesTags: ["Refetch_Review"],
     }),
 
-    // Get reviews for a specific course
-    getCourseReviews: builder.query({
-      query: (courseId) => `/course/${courseId}`,
-      providesTags: ["Refetch_Review"],
-    }),
+   
   }),
 });
 
 export const {
   useAddReviewMutation,
-  useGetInstructorReviewsQuery,
-  useReplyToReviewMutation,
   useGetCourseReviewsQuery,
+  useReplyToReviewMutation,
 } = reviewApi;
