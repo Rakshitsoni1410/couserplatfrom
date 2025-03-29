@@ -67,29 +67,25 @@ export const instructorReplyToReview = async (req, res) => {
     const { reviewId } = req.params;
     const { reply } = req.body;
 
-    if (!reply) {
-      return res.status(400).json({ success: false, message: "Reply is required." });
-    }
-
-    const review = await Review.findById(reviewId);
+    const review = await Review.findById(reviewId).populate("course");
     if (!review) {
-      return res.status(404).json({ success: false, message: "Review not found." });
+      return res.status(404).json({ success: false, message: "Review not found" });
     }
 
-    // ✅ Check if the instructor owns the course
-    const course = await Course.findById(review.course);
-    if (!course || course.instructor.toString() !== req.id) {
-      return res.status(403).json({ success: false, message: "Not authorized to reply." });
+    const course = review.course;
+
+    // 🔁 FIXED LINE BELOW
+    if (course.creator.toString() !== req.id) {
+      return res.status(403).json({ success: false, message: "Unauthorized to reply" });
     }
 
-    // ✅ Update the review with the reply
     review.reply = reply;
     await review.save();
 
     res.status(200).json({ success: true, message: "Reply added successfully", review });
   } catch (error) {
-    console.error("❌ instructorReplyToReview error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log("❌ instructorReplyToReview error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
 
