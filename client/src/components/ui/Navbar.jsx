@@ -50,7 +50,7 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-2">
         <School size={30} />
         <Link to="/">
-          <h1 className="font-extrabold text-2xl">E-Learning</h1>
+          <h1 className="font-extrabold text-2xl">NextSkill</h1>
         </Link>
       </div>
 
