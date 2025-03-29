@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useAddReviewMutation } from "@/features/api/reviewApi";
 import { toast } from "sonner";
 import { Star } from "lucide-react";
-import { useParams } from "react-router-dom";
 
-const ReviewForm = ({ courseId, instructorId }) => {
+const ReviewForm = ({ courseId }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
@@ -13,15 +12,14 @@ const ReviewForm = ({ courseId, instructorId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!courseId || !instructorId) {
-      toast.error("Course or Instructor ID is missing.");
+    if (!courseId) {
+      toast.error("Course ID is missing.");
       return;
     }
 
     try {
       const res = await addReview({
-        course: courseId,
-        instructor: instructorId,
+        courseId,
         rating,
         comment,
       }).unwrap();
@@ -32,6 +30,7 @@ const ReviewForm = ({ courseId, instructorId }) => {
       toast.error(err?.data?.message || "Failed to submit review.");
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit}

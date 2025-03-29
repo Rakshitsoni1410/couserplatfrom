@@ -1,65 +1,82 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { useGetInstructorReviewsQuery, useReplyToReviewMutation } from "@/features/api/reviewApi";
 import { toast } from "sonner";
 
-const InstructorReviews = () => {
-  const { data, isLoading, isError } = useGetInstructorReviewsQuery();
+const Reviews = () => {
+  const { courseId } = useParams(); // If present, fetch course-specific reviews
+  const { user } = useSelector((state) => state.auth);
+  const instructorId = user?._id;
+
+  // Fetch reviews (all instructor reviews OR specific course reviews)
+  const { data, isLoading, isError } = useGetInstructorReviewsQuery({ courseId });
   const [replyToReview] = useReplyToReviewMutation();
   const [replyInputs, setReplyInputs] = useState({});
 
-  const handleReplyChange = (id, value) => {
-    setReplyInputs((prev) => ({ ...prev, [id]: value }));
+  if (isLoading) return <p>Loading reviews...</p>;
+  if (isError || !data?.success) {
+    toast.error("Could not fetch reviews.");
+    return <p>Failed to load reviews.</p>;
+  }
+
+  const reviews = data.reviews;
+
+  const handleReplyChange = (reviewId, value) => {
+    setReplyInputs((prev) => ({ ...prev, [reviewId]: value }));
   };
 
   const handleReplySubmit = async (reviewId) => {
     try {
       await replyToReview({ reviewId, reply: replyInputs[reviewId] }).unwrap();
-      toast.success("Reply sent!");
+      toast.success("Reply submitted!");
       setReplyInputs((prev) => ({ ...prev, [reviewId]: "" }));
     } catch (error) {
-      toast.error("Failed to send reply.");
+      toast.error("Failed to submit reply.");
     }
   };
 
-  if (isLoading) return <p>Loading reviews...</p>;
-  if (isError) return <p>Failed to load reviews.</p>;
-
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold mb-4">Student Reviews</h2>
-      {data?.reviews?.length === 0 ? (
+      <h2 className="text-2xl font-bold">
+        {courseId ? "Course Reviews" : "All Instructor Reviews"}
+      </h2>
+
+      {reviews.length === 0 ? (
         <p>No reviews yet.</p>
       ) : (
-        data.reviews.map((review) => (
-          <div key={review._id} className="bg-white dark:bg-gray-900 shadow rounded-xl p-4">
-            <div className="mb-2">
-              <p className="font-medium text-lg">{review.student.name}</p>
-              <p className="text-sm text-gray-500">Rating: {review.rating} ⭐</p>
-              <p className="mt-1">{review.comment}</p>
-            </div>
+        reviews.map((review) => (
+          <div key={review._id} className="bg-white shadow-md rounded-lg p-4">
+            <p className="font-medium">{review.student?.name}</p>
+            <p className="text-sm text-gray-500">Rating: {review.rating} ⭐</p>
+            <p className="mt-1">{review.comment}</p>
 
+            {/* ✅ Show instructor reply if exists */}
             {review.reply ? (
-              <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2">
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <strong>Your Reply:</strong> {review.reply}
+              <div className="bg-gray-100 p-3 rounded mt-2">
+                <p className="text-sm text-gray-600">
+                  <strong>Instructor Reply:</strong> {review.reply}
                 </p>
               </div>
             ) : (
-              <div className="mt-2 space-y-2">
-                <textarea
-                  rows={2}
-                  placeholder="Write your reply..."
-                  value={replyInputs[review._id] || ""}
-                  onChange={(e) => handleReplyChange(review._id, e.target.value)}
-                  className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white"
-                />
-                <button
-                  onClick={() => handleReplySubmit(review._id)}
-                  className="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 transition"
-                >
-                  Send Reply
-                </button>
-              </div>
+              // ✅ Only show reply box if user is instructor
+              instructorId && (
+                <div className="mt-3 space-y-2">
+                  <textarea
+                    rows={2}
+                    placeholder="Write a reply..."
+                    value={replyInputs[review._id] || ""}
+                    onChange={(e) => handleReplyChange(review._id, e.target.value)}
+                    className="w-full border rounded-md p-2"
+                  />
+                  <button
+                    onClick={() => handleReplySubmit(review._id)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded"
+                  >
+                    Submit Reply
+                  </button>
+                </div>
+              )
             )}
           </div>
         ))
@@ -68,4 +85,4 @@ const InstructorReviews = () => {
   );
 };
 
-export default InstructorReviews;
+export default Reviews;

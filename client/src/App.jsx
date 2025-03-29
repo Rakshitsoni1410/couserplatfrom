@@ -17,7 +17,7 @@ import AddCourse from "./pages/admin/course/AddCourse";
 import EditCourse from "./pages/admin/course/EditCourse";
 import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import EditLecture from "./pages/admin/lecture/EditLecture";
-
+import InstructorReviews from "./pages/admin/review/InstructorReviews";
 // ✅ Student Components
 import CourseDetail from "./pages/student/CourseDetail";
 import PaymentPage from "./components/ui/PaymentPage";
@@ -32,7 +32,6 @@ import PurchaseCourseProtectedRoute from "./components/ui/PurchaseCourseProtecte
 import { ThemeProvider } from "./components/ui/ThemeProvider";
 import ReviewForm from "./pages/student/ReviewForm";
 import CourseReviewPage from "./pages/student/CourseReviewPage";
-
 // ✅ Defining Routes
 const appRouter = createBrowserRouter([
   {
@@ -91,9 +90,7 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "payment/:courseId", // ✅ Payment page for purchasing a course
-        element: (
-            <PaymentPage />
-        ),
+        element: <PaymentPage />,
       },
       {
         path: "course-progress/:courseId", // ✅ Course details page
@@ -111,7 +108,14 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      
+      {
+        path: "review/:courseId/:instructorId", // ✅ Students submit a review to an instructor
+        element: (
+          <ProtectedRoute>
+            <ReviewForm/>
+          </ProtectedRoute>
+        ),
+      },
       // 📌 Admin Routes (Requires authentication)
       {
         path: "admin",
@@ -144,6 +148,14 @@ const appRouter = createBrowserRouter([
           {
             path: "course/:courseId/lecture/:lectureId",
             element: <EditLecture />, // ✅ Edit a specific lecture
+          },
+          {
+            path: "review",
+            element: <InstructorReviews />, // ✅ Handles /admin/review
+          },
+          {
+            path: "review/:courseId",
+            element: <InstructorReviews />, // ✅ Handles /admin/review/:courseId
           },
         ],
       },

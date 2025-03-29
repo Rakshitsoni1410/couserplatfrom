@@ -8,13 +8,12 @@ export const reviewApi = createApi({
     baseUrl: REVIEW_API,
     credentials: "include",
   }),
-  tagTypes: ["Refetch_Review"],
+  tagTypes: ["Refetch_Review", "Review"],
   endpoints: (builder) => ({
-
     // ✅ Create a new review
     addReview: builder.mutation({
       query: (data) => ({
-        url: "/", // ✅ Fixed: No "/add"
+        url: "/", // POST /api/v1/review/
         method: "POST",
         body: data,
       }),
@@ -23,21 +22,50 @@ export const reviewApi = createApi({
 
     // ✅ Get all reviews for a specific course
     getCourseReviews: builder.query({
-      query: (courseId) => `/${courseId}`, // ✅ Matches backend: /:courseId
+      query: (courseId) => `/${courseId}`,
       providesTags: ["Refetch_Review"],
     }),
 
-    // ✅ Instructor reply to a review
+    // ✅ Instructor reply to a student review
     replyToReview: builder.mutation({
       query: ({ reviewId, reply }) => ({
-        url: `/reply/${reviewId}`, // ✅ Correct path
+        url: `/reply/${reviewId}`,
         method: "PUT",
         body: { reply },
       }),
       invalidatesTags: ["Refetch_Review"],
     }),
 
-   
+    // ✅ Instructor fetches reviews for their course(s)
+    // ✅ Instructor fetches reviews for their courses
+    getInstructorReviews: builder.query({
+      query: ({ courseId }) => {
+        let queryStr = "/instructor-reviews";
+        if (courseId) queryStr += `?courseId=${courseId}`;
+
+        return { url: queryStr, method: "GET" };
+      },
+      providesTags: ["Refetch_Review"],
+    }),
+
+    // ✏️ Edit review
+    /*editReview: builder.mutation({
+      query: ({ reviewId, rating, comment }) => ({
+        url: `/${reviewId}`,
+        method: "PUT",
+        body: { rating, comment },
+      }),
+      invalidatesTags: ["Refetch_Review"],
+    }),
+
+    // 🗑️ Delete review
+    deleteReview: builder.mutation({
+      query: (reviewId) => ({
+        url: `/${reviewId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Refetch_Review"],
+    }),*/
   }),
 });
 
@@ -45,4 +73,7 @@ export const {
   useAddReviewMutation,
   useGetCourseReviewsQuery,
   useReplyToReviewMutation,
+  useGetInstructorReviewsQuery,
+  // useEditReviewMutation,
+  // useDeleteReviewMutation,
 } = reviewApi;

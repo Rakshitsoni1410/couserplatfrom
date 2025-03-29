@@ -1,3 +1,4 @@
+// CourseReviewPage.jsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import ReviewForm from "./ReviewForm";
@@ -9,7 +10,7 @@ const CourseReviewPage = () => {
 
   const { data, isLoading, error } = useGetCourseReviewsQuery(courseId);
   const reviews = data?.reviews || [];
-  const instructorId = data?.instructorId;
+  const instructorId = data?.instructorId || "";
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-8">
@@ -41,10 +42,12 @@ const CourseReviewPage = () => {
         ) : error ? (
           <p className="text-red-500">Unable to fetch reviews.</p>
         ) : reviews.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to share your experience!</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            No reviews yet. Be the first to share your experience!
+          </p>
         ) : (
           <ul className="relative border-l border-gray-300 dark:border-gray-700 pl-6">
-            {reviews.map((r, index) => (
+            {reviews.map((r) => (
               <li key={r._id} className="mb-10">
                 <div className="absolute -left-4 top-1.5 bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center text-white shadow-lg">
                   <UserCircle2 size={18} />
