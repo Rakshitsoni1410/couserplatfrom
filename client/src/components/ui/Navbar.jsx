@@ -106,7 +106,7 @@ const Navbar = () => {
 
       {/* Mobile View */}
       <div className="w-full flex md:hidden items-center justify-between h-full px-4">
-        <h1 className="font-extrabold text-2xl">E-Learning</h1>
+        <h1 className="font-extrabold text-2xl">NextSkill</h1>
         <MobileNavbar user={user} logoutHandler={logoutHandler} />
       </div>
     </div>
