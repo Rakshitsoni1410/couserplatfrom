@@ -50,6 +50,11 @@ app.use("/api/v1/purchase", purchaseRoute); // /webhook is handled separately ab
 app.use("/api/v1/progress", courseProgressRoute);
 app.use("/api/v1/review", reviewRoute);
 
+// Default route for backend root
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully! 🚀");
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(` Server is running on port ${PORT}`);
