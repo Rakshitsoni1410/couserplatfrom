@@ -8,7 +8,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
+  ResponsiveContainer
 } from "recharts";
 
 const Dashboard = () => {
@@ -17,12 +17,15 @@ const Dashboard = () => {
   if (isLoading) return <h1>Loading...</h1>;
   if (isError) return <h1 className="text-red-500">Failed to get purchased course</h1>;
 
-  const purchasedCourse = data?.purchasedCourse || [];
+  const { purchasedCourse } = data || { purchasedCourse: [] };
 
-  const courseData = purchasedCourse.map((course) => ({
-    name: course.courseId.courseTitle,
-    price: course.courseId.coursePrice,
-  }));
+  // Handle possible null courseId entries
+  const courseData = purchasedCourse
+    .filter((course) => course.courseId) // only keep ones with valid courseId
+    .map((course) => ({
+      name: course.courseId.courseTitle,
+      price: course.courseId.coursePrice
+    }));
 
   const totalRevenue = purchasedCourse.reduce(
     (acc, element) => acc + (element.amount || 0),
@@ -47,7 +50,7 @@ const Dashboard = () => {
           <CardTitle>Total Revenue</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-600">{totalRevenue}</p>
+          <p className="text-3xl font-bold text-blue-600">₹{totalRevenue}</p>
         </CardContent>
       </Card>
 
