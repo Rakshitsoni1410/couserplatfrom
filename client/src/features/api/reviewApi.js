@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const REVIEW_API = "https://api-production-210c.up.railway.app/review";
+const REVIEW_API = "http://localhost:8008/api/v1/review";
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
