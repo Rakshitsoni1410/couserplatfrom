@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userLoggedIn, userLoggedOut } from "@/features/authSlice"; // ✅ Ensure correct import
 
-const USER_API = "http://localhost:8008/api/v1/user/";
+const USER_API = "https://api-production-210c.up.railway.app/user/";
 
 export const authApi = createApi({
     reducerPath: "authApi",
