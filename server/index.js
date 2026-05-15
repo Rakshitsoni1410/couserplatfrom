@@ -14,26 +14,32 @@ import reviewRoute from "./routes/review.route.js";
 
 import { paymentWebhook } from "./controllers/coursePurchase.controller.js";
 
-// Load environment variables
+// ======================
+// Load Environment Variables
+// ======================
+
 dotenv.config();
 
-// Connect Database
-console.log("Connecting to MongoDB...");
-
-connectDB()
-  .then(() => console.log(" MongoDB Connected Successfully"))
-  .catch((err) => console.log(" MongoDB Connection Error:", err));
+// ======================
+// Initialize Express App
+// ======================
 
 const app = express();
 
-// Trust proxy for Render deployment
+// ======================
+// Trust Proxy (Render)
+// ======================
+
 app.set("trust proxy", 1);
 
+// ======================
 // PORT
+// ======================
+
 const PORT = process.env.PORT || 8080;
 
 // ======================
-// CORS Configuration
+// Allowed Origins
 // ======================
 
 const allowedOrigins = [
@@ -41,10 +47,14 @@ const allowedOrigins = [
   "https://nextskills.netlify.app",
 ];
 
+// ======================
+// CORS Middleware
+// ======================
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (postman/mobile apps)
+      // Allow requests with no origin
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -58,7 +68,13 @@ app.use(
 );
 
 // Handle preflight requests
-app.options("*", cors());
+app.options(
+  "*",
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 // ======================
 // Stripe Webhook
@@ -76,7 +92,9 @@ app.post(
 // ======================
 
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 
 // ======================
@@ -100,11 +118,11 @@ app.use("/api/v1/review", reviewRoute);
 // ======================
 
 app.get("/", (req, res) => {
-  res.status(200).send("Backend is running successfully! 🚀");
+  res.status(200).send("Backend is running successfully 🚀");
 });
 
 // ======================
-// 404 Route
+// 404 Handler
 // ======================
 
 app.use((req, res) => {
@@ -119,7 +137,7 @@ app.use((req, res) => {
 // ======================
 
 app.use((err, req, res, next) => {
-  console.error(" Server Error:", err.message);
+  console.error("Server Error:", err);
 
   res.status(500).json({
     success: false,
@@ -128,9 +146,31 @@ app.use((err, req, res, next) => {
 });
 
 // ======================
-// Start Server
+// Start Server Function
 // ======================
 
-app.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    console.log("Connecting to MongoDB...");
+
+    await connectDB();
+
+    console.log("MongoDB Connected Successfully");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("FULL STARTUP ERROR:");
+    console.error(error);
+
+    process.exit(1);
+  }
+};
+
+// ======================
+// Start Application
+// ======================
+
+startServer();
