@@ -1,15 +1,19 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "description": "Backend Server",
   "main": "index.js",
   "type": "module",
+
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
+
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
@@ -23,8 +27,12 @@
     "stripe": "^17.7.0",
     "uuid": "^11.1.0"
   },
+
   "devDependencies": {
     "nodemon": "^3.1.9"
   },
-  "description": ""
+
+  "engines": {
+    "node": ">=18"
+  }
 }
