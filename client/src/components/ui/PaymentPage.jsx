@@ -136,7 +136,7 @@ const PaymentPage = () => {
         toast.success("Payment initiated!");
     
         // ✅ Trigger webhook manually
-           await fetch("http://localhost:8008/api/v1/purchase/webhook", {
+          await fetch(`${import.meta.env.VITE_API_URL}/purchase/webhook`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
