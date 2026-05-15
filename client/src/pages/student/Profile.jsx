@@ -56,15 +56,20 @@ const Profile = () => {
       toast.success("Profile updated successfully");
     }
     if (isError) {
-      toast.error(error?.message || "Failed to update profile");
+      toast.error(error?.data?.message || "Failed to update profile");
     }
   }, [isSuccess, isError, error, updateUserData]);
 
   if (isLoading) return <h1>Profile loading ......</h1>;
 
   const user = data?.user;
-  if (!user) return <h1>User data not found</h1>;
-
+  if (!user) {
+  return (
+    <h1 className="text-center text-red-500 mt-10">
+      Failed to load user profile
+    </h1>
+  );
+}
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
       <h1 className="font-bold text-2xl text-center md:text-left">Profile</h1>
