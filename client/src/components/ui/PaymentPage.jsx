@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, {
+  useState,
+  useEffect,
+} from "react";
+
+import {
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
+
 import {
   useGetCourseDetailWithStatusQuery,
   useCreateCheckoutSessionMutation,
@@ -11,92 +20,112 @@ import {
   FaCcMastercard,
   FaCcAmex,
   FaCcDiscover,
-  FaCreditCard,
+  FaLock,
 } from "react-icons/fa";
+
+import {
+  ShieldCheck,
+  PlayCircle,
+  Award,
+  Loader2,
+  CreditCard,
+  Sparkles,
+} from "lucide-react";
 
 import { toast } from "sonner";
 
 const PaymentPage = () => {
   const navigate = useNavigate();
+
   const { courseId } = useParams();
 
-  // ======================
-  // Card State
-  // ======================
+  const [cardDetails, setCardDetails] =
+    useState({
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+    });
 
-  const [cardDetails, setCardDetails] = useState({
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  // ======================
-  // Fetch Course
-  // ======================
+  const [loading, setLoading] =
+    useState(false);
 
   const { data, isLoading, isError } =
-    useGetCourseDetailWithStatusQuery(courseId, {
-      skip: !courseId,
-    });
+    useGetCourseDetailWithStatusQuery(
+      courseId,
+      {
+        skip: !courseId,
+      }
+    );
 
   const [createCheckoutSession] =
     useCreateCheckoutSessionMutation();
 
-  // ======================
-  // Course ID Validation
-  // ======================
-
   useEffect(() => {
     if (!courseId) {
-      console.error("Course ID is missing.");
+      console.error(
+        "Course ID is missing."
+      );
     }
   }, [courseId]);
 
-  // ======================
-  // Error States
-  // ======================
-
   if (!courseId) {
     return (
-      <h1 className="text-center text-red-500 font-bold mt-10">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-red-400 text-xl font-bold">
+
         Course ID is missing.
-      </h1>
+
+      </div>
     );
   }
 
   if (isLoading) {
     return (
-      <h1 className="text-center text-xl mt-10">
-        Loading course details...
-      </h1>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+
+        <Loader2 className="h-12 w-12 animate-spin text-indigo-500" />
+
+      </div>
     );
   }
 
   if (isError || !data?.course) {
     return (
-      <h1 className="text-center text-red-500 text-xl mt-10">
-        Failed to load course details.
-      </h1>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+
+        <div className="bg-red-500/10 border border-red-500/20 rounded-3xl p-6">
+
+          <h1 className="text-red-400 text-xl font-semibold">
+            Failed to load course details.
+          </h1>
+
+        </div>
+      </div>
     );
   }
 
   const { course } = data;
 
-  // ======================
-  // Expiry Validation
-  // ======================
-
-  const isValidExpiryDate = (expiry) => {
+  // EXPIRY VALIDATION
+  const isValidExpiryDate = (
+    expiry
+  ) => {
     const regex = /^\d{2}\/\d{2}$/;
 
-    if (!regex.test(expiry)) return false;
+    if (!regex.test(expiry))
+      return false;
 
-    const [monthStr, yearStr] = expiry.split("/");
+    const [monthStr, yearStr] =
+      expiry.split("/");
 
-    const month = parseInt(monthStr, 10);
-    const year = parseInt("20" + yearStr, 10);
+    const month = parseInt(
+      monthStr,
+      10
+    );
+
+    const year = parseInt(
+      "20" + yearStr,
+      10
+    );
 
     if (
       isNaN(month) ||
@@ -108,67 +137,84 @@ const PaymentPage = () => {
     }
 
     const now = new Date();
-    const expiryDate = new Date(year, month, 0);
+
+    const expiryDate = new Date(
+      year,
+      month,
+      0
+    );
 
     return expiryDate >= now;
   };
 
-  // ======================
-  // Form Validation
-  // ======================
-
   const isFormValid =
-    cardDetails.cardNumber.length === 16 &&
-    isValidExpiryDate(cardDetails.expiryDate) &&
+    cardDetails.cardNumber.length ===
+      16 &&
+    isValidExpiryDate(
+      cardDetails.expiryDate
+    ) &&
     cardDetails.cvv.length === 3;
 
-  // ======================
-  // Payment Handler
-  // ======================
-
+  // PAYMENT
   const handlePayment = async () => {
-    const { cardNumber, expiryDate, cvv } = cardDetails;
+    const {
+      cardNumber,
+      expiryDate,
+      cvv,
+    } = cardDetails;
 
-    // Card validation
-    if (cardNumber.length !== 16) {
-      toast.error("Card number must be 16 digits.");
+    if (
+      cardNumber.length !== 16
+    ) {
+      toast.error(
+        "Card number must be 16 digits."
+      );
+
       return;
     }
 
-    if (!isValidExpiryDate(expiryDate)) {
+    if (
+      !isValidExpiryDate(
+        expiryDate
+      )
+    ) {
       toast.error(
-        "Your card is expired or expiry date is invalid."
+        "Invalid expiry date."
       );
+
       return;
     }
 
     if (cvv.length !== 3) {
-      toast.error("CVV must be 3 digits.");
+      toast.error(
+        "CVV must be 3 digits."
+      );
+
       return;
     }
 
     try {
       setLoading(true);
 
-      const res = await createCheckoutSession({
-        courseId: course._id,
-        paymentMethod: "card",
-        cardNumber,
-      }).unwrap();
+      const res =
+        await createCheckoutSession({
+          courseId: course._id,
+          paymentMethod: "card",
+          cardNumber,
+        }).unwrap();
 
-      // Success
       toast.success(
-        res?.message || "Payment successful!"
+        res?.message ||
+          "Payment successful!"
       );
 
-      // Redirect
       setTimeout(() => {
-        navigate(`/course-progress/${course._id}`);
+        navigate(
+          `/course-progress/${course._id}`
+        );
       }, 1500);
 
     } catch (err) {
-      console.error(err);
-
       const errorMessage =
         err?.data?.message ||
         err?.message ||
@@ -176,171 +222,288 @@ const PaymentPage = () => {
 
       toast.error(errorMessage);
 
-      // Already purchased
       if (
         errorMessage
           .toLowerCase()
-          .includes("already purchased")
+          .includes(
+            "already purchased"
+          )
       ) {
         setTimeout(() => {
-          navigate(`/course-progress/${course._id}`);
+          navigate(
+            `/course-progress/${course._id}`
+          );
         }, 1500);
       }
-
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================
-  // UI
-  // ======================
-
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-gray-100 p-10 space-y-12 lg:space-y-0 lg:space-x-14">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-white px-4 py-10 overflow-hidden relative">
 
-      {/* Left Side */}
-      <div className="relative bg-white shadow-xl rounded-2xl p-8 w-full lg:w-2/5 space-y-6">
+      {/* BACKGROUND EFFECTS */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
 
-        <div className="relative flex justify-center items-center rounded-xl overflow-hidden shadow-lg bg-white p-4">
+        <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-indigo-500/10 blur-3xl rounded-full" />
 
-          <img
-            src={course.courseThumbnail}
-            alt="Course Thumbnail"
-            className="w-30 max-w-md h-64 object-cover rounded-lg shadow-md"
-          />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/10 blur-3xl rounded-full" />
 
-          <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-bold px-4 py-2 rounded-xl shadow-md">
-            ₹{course.coursePrice}
-          </div>
-        </div>
-
-        <div className="text-center space-y-4">
-
-          <h2 className="text-3xl font-bold text-gray-900">
-            {course.courseTitle}
-          </h2>
-
-          <p className="text-lg text-gray-700">
-            By{" "}
-            <span className="font-medium text-blue-600">
-              {course.creator.name}
-            </span>
-          </p>
-
-          <p className="text-lg text-gray-700 italic">
-            {course.subTitle}
-          </p>
-
-          <p className="text-md text-gray-600 leading-relaxed">
-            {course.description
-              .replace(/<\/?[^>]+(>|$)/g, "")
-              .slice(0, 150)}
-            ...
-          </p>
-        </div>
-
-        <div className="flex justify-center space-x-6 mt-4">
-
-          <div className="flex flex-col items-center text-blue-600">
-            <FaCreditCard className="w-10 h-10" />
-            <span className="text-sm font-semibold mt-1">
-              Lifetime Access
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center text-purple-600">
-            <FaCcMastercard className="w-10 h-10" />
-            <span className="text-sm font-semibold mt-1">
-              Certificate
-            </span>
-          </div>
-
-          <div className="flex flex-col items-center text-green-600">
-            <FaCcVisa className="w-10 h-10" />
-            <span className="text-sm font-semibold mt-1">
-              HD Videos
-            </span>
-          </div>
-
-        </div>
       </div>
 
-      {/* Right Side */}
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full lg:w-2/5 space-y-8">
+      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-2 gap-10 items-start">
 
-        <h2 className="text-3xl font-semibold text-center text-gray-900">
-          Complete Your Payment
-        </h2>
+        {/* LEFT SIDE */}
+        <div className="bg-slate-900/70 border border-slate-800 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl">
 
-        <div className="mt-4 space-y-6 p-6 border rounded-lg bg-gray-50">
+          {/* THUMBNAIL */}
+          <div className="relative">
 
-          <div className="flex justify-center gap-6">
-            <FaCcVisa className="text-blue-500" size={45} />
-            <FaCcMastercard className="text-red-600" size={45} />
-            <FaCcAmex className="text-indigo-500" size={45} />
-            <FaCcDiscover className="text-orange-500" size={45} />
+            <img
+              src={course.courseThumbnail}
+              alt="Course Thumbnail"
+              className="w-full h-[320px] object-cover"
+            />
+
+            <div className="absolute top-5 right-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xl font-bold px-5 py-3 rounded-2xl shadow-xl">
+
+              ₹{course.coursePrice}
+
+            </div>
           </div>
 
-          {/* Card Number */}
-          <input
-            type="text"
-            placeholder="Card Number"
-            className="w-full p-4 border rounded-xl text-lg bg-white shadow-md"
-            value={cardDetails.cardNumber}
-            onChange={(e) =>
-              setCardDetails({
-                ...cardDetails,
-                cardNumber: e.target.value,
-              })
-            }
-            maxLength="16"
-          />
+          {/* CONTENT */}
+          <div className="p-8">
 
-          <div className="flex gap-4">
+            {/* BADGE */}
+            <div className="flex items-center gap-2 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 px-4 py-2 rounded-full w-fit text-sm mb-6">
 
-            {/* Expiry */}
-            <input
-              type="text"
-              placeholder="MM/YY"
-              className="w-1/2 p-4 border rounded-xl text-lg bg-white shadow-md"
-              value={cardDetails.expiryDate}
-              onChange={(e) =>
-                setCardDetails({
-                  ...cardDetails,
-                  expiryDate: e.target.value,
-                })
-              }
-              maxLength="5"
-            />
+              <Sparkles size={16} />
 
-            {/* CVV */}
-            <input
-              type="password"
-              placeholder="CVV"
-              className="w-1/2 p-4 border rounded-xl text-lg bg-white shadow-md"
-              value={cardDetails.cvv}
-              onChange={(e) =>
-                setCardDetails({
-                  ...cardDetails,
-                  cvv: e.target.value,
-                })
-              }
-              maxLength="3"
-            />
+              Premium Learning Experience
 
+            </div>
+
+            <h1 className="text-4xl font-bold leading-tight">
+              {course.courseTitle}
+            </h1>
+
+            <p className="text-indigo-400 text-lg mt-3 font-medium">
+              By {course.creator.name}
+            </p>
+
+            <p className="text-slate-400 mt-5 text-lg leading-relaxed">
+              {course.subTitle}
+            </p>
+
+            <div className="mt-6 bg-slate-950 border border-slate-800 rounded-2xl p-5">
+
+              <p className="text-slate-400 leading-relaxed">
+                {course.description
+                  .replace(
+                    /<\/?[^>]+(>|$)/g,
+                    ""
+                  )
+                  .slice(0, 180)}
+                ...
+              </p>
+
+            </div>
+
+            {/* FEATURES */}
+            <div className="grid grid-cols-3 gap-4 mt-8">
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center text-center">
+
+                <PlayCircle className="text-indigo-400 w-8 h-8 mb-3" />
+
+                <p className="text-sm text-slate-300">
+                  HD Videos
+                </p>
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center text-center">
+
+                <Award className="text-green-400 w-8 h-8 mb-3" />
+
+                <p className="text-sm text-slate-300">
+                  Certificate
+                </p>
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col items-center text-center">
+
+                <ShieldCheck className="text-yellow-400 w-8 h-8 mb-3" />
+
+                <p className="text-sm text-slate-300">
+                  Lifetime Access
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Button */}
-        <Button
-          onClick={handlePayment}
-          disabled={loading || !isFormValid}
-          className="w-full bg-blue-600 text-white p-4 rounded-xl text-xl font-semibold hover:bg-blue-700 transition"
-        >
-          {loading ? "Processing..." : "Pay Now"}
-        </Button>
+        {/* PAYMENT CARD */}
+        <div className="bg-slate-900/70 border border-slate-800 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
 
+          {/* HEADER */}
+          <div className="text-center mb-8">
+
+            <div className="h-20 w-20 rounded-full bg-indigo-600/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-5">
+
+              <CreditCard className="text-indigo-400 w-10 h-10" />
+
+            </div>
+
+            <h2 className="text-4xl font-bold">
+              Secure Checkout
+            </h2>
+
+            <p className="text-slate-400 mt-3">
+              Complete your payment safely and
+              securely.
+            </p>
+          </div>
+
+          {/* PAYMENT METHODS */}
+          <div className="flex justify-center gap-6 mb-8">
+
+            <FaCcVisa
+              className="text-blue-500"
+              size={42}
+            />
+
+            <FaCcMastercard
+              className="text-red-500"
+              size={42}
+            />
+
+            <FaCcAmex
+              className="text-indigo-400"
+              size={42}
+            />
+
+            <FaCcDiscover
+              className="text-orange-400"
+              size={42}
+            />
+
+          </div>
+
+          {/* FORM */}
+          <div className="space-y-6">
+
+            {/* CARD NUMBER */}
+            <div>
+
+              <label className="text-sm text-slate-400 mb-2 block">
+                Card Number
+              </label>
+
+              <input
+                type="text"
+                placeholder="1234 5678 9012 3456"
+                maxLength="16"
+                value={
+                  cardDetails.cardNumber
+                }
+                onChange={(e) =>
+                  setCardDetails({
+                    ...cardDetails,
+                    cardNumber:
+                      e.target.value,
+                  })
+                }
+                className="w-full h-14 bg-slate-950 border border-slate-700 rounded-2xl px-5 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            {/* ROW */}
+            <div className="grid grid-cols-2 gap-4">
+
+              {/* EXPIRY */}
+              <div>
+
+                <label className="text-sm text-slate-400 mb-2 block">
+                  Expiry Date
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="MM/YY"
+                  maxLength="5"
+                  value={
+                    cardDetails.expiryDate
+                  }
+                  onChange={(e) =>
+                    setCardDetails({
+                      ...cardDetails,
+                      expiryDate:
+                        e.target.value,
+                    })
+                  }
+                  className="w-full h-14 bg-slate-950 border border-slate-700 rounded-2xl px-5 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              {/* CVV */}
+              <div>
+
+                <label className="text-sm text-slate-400 mb-2 block">
+                  CVV
+                </label>
+
+                <input
+                  type="password"
+                  placeholder="123"
+                  maxLength="3"
+                  value={
+                    cardDetails.cvv
+                  }
+                  onChange={(e) =>
+                    setCardDetails({
+                      ...cardDetails,
+                      cvv: e.target.value,
+                    })
+                  }
+                  className="w-full h-14 bg-slate-950 border border-slate-700 rounded-2xl px-5 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+
+            {/* SECURITY */}
+            <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-2xl p-4">
+
+              <FaLock className="text-green-400" />
+
+              <p className="text-sm text-green-400">
+                Your payment is secured with
+                256-bit SSL encryption.
+              </p>
+
+            </div>
+
+            {/* BUTTON */}
+            <Button
+              onClick={handlePayment}
+              disabled={
+                loading ||
+                !isFormValid
+              }
+              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 rounded-2xl text-lg font-semibold shadow-lg shadow-indigo-500/20"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                `Pay ₹${course.coursePrice}`
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
