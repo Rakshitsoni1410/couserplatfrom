@@ -64,7 +64,35 @@
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fade-in-up 0.9s ease-out forwards;
+  }
 
+  .animate-slow-float {
+    animation: float 12s ease-in-out infinite;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(12px, -18px);
+  }
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
